@@ -127,6 +127,12 @@ img {
   margin-left: auto;
 }
 
+.header-account-shell {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
 .header-call-cta {
   display: inline-flex;
   align-items: center;
@@ -167,6 +173,112 @@ img {
 
 .header-account-btn {
   min-width: 78px;
+}
+
+.header-account-status {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 0.14rem;
+}
+
+.header-account-status__label {
+  font-size: 0.63rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #7a6553;
+}
+
+.header-account-status__button {
+  border: 0;
+  background: transparent;
+  padding: 0;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.28rem;
+  font: inherit;
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: #4b382a;
+  cursor: pointer;
+}
+
+.header-account-status__name {
+  max-width: 154px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.header-account-status__caret {
+  font-size: 0.72rem;
+  color: #8b3a24;
+}
+
+.header-account-menu {
+  position: absolute;
+  top: calc(100% + 0.55rem);
+  right: 0;
+  z-index: 40;
+  width: min(240px, 72vw);
+  padding: 0.65rem;
+  border: 1px solid #dbc8b6;
+  border-radius: 14px;
+  background: rgba(255, 250, 243, 0.98);
+  box-shadow: 0 16px 30px rgba(56, 36, 24, 0.16);
+}
+
+.header-account-menu__summary {
+  padding-bottom: 0.55rem;
+  margin-bottom: 0.55rem;
+  border-bottom: 1px solid #e7d7c7;
+}
+
+.header-account-menu__summary strong,
+.header-account-menu__summary p {
+  display: block;
+}
+
+.header-account-menu__summary strong {
+  color: #3e2f25;
+}
+
+.header-account-menu__summary p {
+  margin: 0.18rem 0 0;
+  font-size: 0.78rem;
+  color: #6b5343;
+  word-break: break-word;
+}
+
+.header-account-menu__eyebrow {
+  margin: 0 0 0.18rem !important;
+  font-size: 0.62rem !important;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: #8a725f;
+}
+
+.header-account-menu__actions {
+  display: grid;
+  gap: 0.3rem;
+}
+
+.header-account-menu__action {
+  border: 0;
+  background: transparent;
+  padding: 0.48rem 0.45rem;
+  border-radius: 10px;
+  text-align: left;
+  font: inherit;
+  font-size: 0.84rem;
+  font-weight: 600;
+  color: #4b382a;
+  cursor: pointer;
+}
+
+.header-account-menu__action:hover {
+  background: #f5e7d8;
 }
 
 .header-tool-icon {
@@ -1438,6 +1550,116 @@ textarea {
   gap: 1rem;
 }
 
+.account-panel__method-label {
+  margin: 0.35rem 0 0.45rem;
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: #7a6553;
+}
+
+.account-panel__method-stack {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+  margin-bottom: 0.7rem;
+}
+
+.account-panel__oauth-icon-btn {
+  width: 44px;
+  height: 44px;
+  border-radius: 999px;
+  border: 1px solid #ddc8b2;
+  background: #fff;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 8px 20px rgba(60, 38, 20, 0.08);
+  cursor: pointer;
+}
+
+.account-panel__oauth-icon-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 12px 24px rgba(60, 38, 20, 0.12);
+}
+
+.account-panel__oauth-icon-btn[disabled],
+.account-panel__oauth-icon-btn[aria-disabled="true"] {
+  opacity: 0.45;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+.account-panel__provider-icon {
+  width: 18px;
+  height: 18px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.account-panel__provider-icon svg {
+  width: 18px;
+  height: 18px;
+}
+
+.account-panel__provider-name {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #4b382a;
+}
+
+.account-panel__auth-divider {
+  margin: 0 0 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-size: 0.74rem;
+  color: #7a6553;
+}
+
+.account-panel__auth-actions {
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.account-panel__auth-actions .btn {
+  flex: 1 1 180px;
+}
+
+.account-panel__text-action {
+  justify-self: start;
+  border: 0;
+  background: transparent;
+  padding: 0;
+  color: #8b3a24;
+  font: inherit;
+  font-size: 0.82rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.account-panel__text-action:hover {
+  text-decoration: underline;
+}
+
+.account-panel__feedback {
+  margin-top: 0.8rem;
+}
+
+.account-panel__orders {
+  scroll-margin-top: 1rem;
+}
+
+.account-panel__feedback[data-tone="error"] {
+  color: #a11e1e;
+}
+
+.account-panel__feedback[data-tone="success"] {
+  color: #256845;
+}
+
 .account-panel__line-item {
   background: #f7ede1;
   border: 1px solid #ddc8b2;
@@ -1486,6 +1708,85 @@ textarea {
   }
 }
 
+
+.account-panel__order-summary {
+  display: flex;
+  gap: 0.55rem;
+  margin-bottom: 0.6rem;
+}
+
+.account-order-metric {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 0.35rem;
+  padding: 0.3rem 0.6rem;
+  border: 1px solid #e0ccba;
+  border-radius: 999px;
+  background: #fbf2e7;
+}
+
+.account-order-metric strong {
+  font-size: 0.88rem;
+  color: #3e2f25;
+}
+
+.account-order-metric small {
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: #7d6857;
+}
+
+.order-status-pill {
+  display: inline-flex;
+  align-items: center;
+  margin-right: 0.35rem;
+  padding: 0.1rem 0.48rem;
+  border-radius: 999px;
+  border: 1px solid #ceb8a6;
+  background: #f6ece1;
+  font-size: 0.68rem;
+  line-height: 1.45;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: #6e5846;
+}
+
+.order-status-pill[data-tone="success"] {
+  border-color: #9ac3ab;
+  background: #e6f3eb;
+  color: #295e43;
+}
+
+.order-status-pill[data-tone="warn"] {
+  border-color: #d5bf92;
+  background: #faf1dc;
+  color: #715629;
+}
+
+.order-status-pill[data-tone="accent"] {
+  border-color: #95b6c9;
+  background: #e7f0f5;
+  color: #28506a;
+}
+
+.order-status-pill[data-tone="danger"] {
+  border-color: #dfacab;
+  background: #fbe8e8;
+  color: #8f2f2d;
+}
+
+.checkout-state {
+  margin-top: 0.65rem;
+}
+
+.checkout-state[data-tone="success"] {
+  color: #265f43;
+}
+
+.checkout-state[data-tone="warn"] {
+  color: #715629;
+}
 @keyframes heroGlimmerSweep {
   0% {
     background-position: 0% 50%;
@@ -1577,6 +1878,14 @@ textarea {
 @media (max-width: 760px) {
   .brand-copy > span {
     display: none;
+  }
+
+  .header-account-status__label {
+    font-size: 0.58rem;
+  }
+
+  .header-account-status__name {
+    max-width: 112px;
   }
 
   .header-tools {

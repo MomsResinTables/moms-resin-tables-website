@@ -53,8 +53,26 @@ export function setAnnouncement(text) {
 }
 
 const CART_KEY = "mrt_cart";
-const ACCOUNT_KEY = "mrt_account";
-const ORDERS_KEY = "mrt_orders";
+const ORDERS_BY_USER_KEY = "mrt_orders_by_user";
+const GUEST_ORDERS_KEY = "mrt_guest_orders";
+const FIREBASE_SDK_VERSION = "11.6.1";
+const FIREBASE_REQUIRED_KEYS = ["apiKey", "authDomain", "projectId", "appId"];
+const DEFAULT_FIREBASE_CONFIG = {
+  apiKey: "AIzaSyAfxbw_Ur2jfQDZqEh-wBX9Lqeo1RdAIPA",
+  authDomain: "customeraccounts-a29eb.firebaseapp.com",
+  projectId: "customeraccounts-a29eb",
+  storageBucket: "customeraccounts-a29eb.appspot.com",
+  messagingSenderId: "4968118695",
+  appId: "1:4968118695:web:079298c836a3d5f5551e82"
+};
+
+let firebaseAuthClientPromise = null;
+let firebaseAuthClient = null;
+let firebaseAccountProfile = null;
+let authStateBootstrapped = false;
+let authConfigState = "checking";
+let googleAuthState = "ready";
+let accountFeedback = { message: "", tone: "info" };
 
 function parseStoredJSON(key, fallback) {
   try {
@@ -71,6 +89,405 @@ function parseStoredJSON(key, fallback) {
 
 function writeStoredJSON(key, value) {
   localStorage.setItem(key, JSON.stringify(value));
+}
+
+function getFirebaseConfig() {
+  const config = window.__MRT_FIREBASE_CONFIG__ || DEFAULT_FIREBASE_CONFIG;
+  if (!config || typeof config !== "object") {
+    return null;
+  }
+
+  const isValid = FIREBASE_REQUIRED_KEYS.every((key) => {
+    const value = config[key];
+    return typeof value === "string" && value.trim().length > 0;
+  });
+
+  return isValid ? config : null;
+}
+
+function hasFirebaseAuthConfig() {
+  return Boolean(getFirebaseConfig());
+}
+
+function setAccountFeedback(message, tone = "info") {
+  accountFeedback = {
+    message: String(message || "").trim(),
+    tone
+  };
+}
+
+function normalizeFirebaseUser(user) {
+  if (!user || !user.email) {
+    return null;
+  }
+
+  const displayName = typeof user.displayName === "string" ? user.displayName.trim() : "";
+  return {
+    uid: typeof user.uid === "string" ? user.uid : "",
+    name: displayName || user.email.split("@")[0] || "Customer",
+    email: user.email,
+    provider: Array.isArray(user.providerData) && user.providerData[0] ? user.providerData[0].providerId || "password" : "password"
+  };
+}
+
+function getCurrentOrderOwnerKey() {
+  const account = firebaseAccountProfile;
+  if (!account || !account.email) {
+    return "";
+  }
+
+  if (account.uid) {
+    return `uid:${account.uid}`;
+  }
+
+  return `email:${account.email.toLowerCase()}`;
+}
+
+function getOrdersByUserMap() {
+  const map = parseStoredJSON(ORDERS_BY_USER_KEY, {});
+  if (!map || typeof map !== "object" || Array.isArray(map)) {
+    return {};
+  }
+  return map;
+}
+
+function saveOrdersByUserMap(map) {
+  writeStoredJSON(ORDERS_BY_USER_KEY, map);
+}
+
+function getOrdersForOwner(ownerKey) {
+  if (!ownerKey) {
+    return [];
+  }
+
+  const map = getOrdersByUserMap();
+  const orders = map[ownerKey];
+  return Array.isArray(orders) ? orders : [];
+}
+
+function saveOrdersForOwner(ownerKey, orders) {
+  if (!ownerKey) {
+    return;
+  }
+
+  const map = getOrdersByUserMap();
+  map[ownerKey] = orders;
+  saveOrdersByUserMap(map);
+}
+
+function getGuestOrders() {
+  const orders = parseStoredJSON(GUEST_ORDERS_KEY, []);
+  return Array.isArray(orders) ? orders : [];
+}
+
+function saveGuestOrders(orders) {
+  writeStoredJSON(GUEST_ORDERS_KEY, orders);
+}
+
+function normalizeOrderStatus(status) {
+  const value = String(status || "").trim().toLowerCase();
+  if (!value) {
+    return "draft";
+  }
+  return value;
+}
+
+function getOrderStatusMeta(status) {
+  const normalized = normalizeOrderStatus(status);
+  const map = {
+    draft: { label: "Draft", tone: "muted" },
+    checkout_started: { label: "Checkout Started", tone: "warn" },
+    payment_submitted: { label: "Payment Submitted", tone: "warn" },
+    paid: { label: "Paid", tone: "success" },
+    processing: { label: "Processing", tone: "accent" },
+    shipped: { label: "Shipped", tone: "accent" },
+    delivered: { label: "Delivered", tone: "success" },
+    canceled: { label: "Canceled", tone: "danger" },
+    invoice_requested: { label: "Invoice Requested", tone: "warn" }
+  };
+
+  return map[normalized] || { label: "Pending", tone: "muted" };
+}
+
+function upsertOrderInList(orders, incoming) {
+  const next = Array.isArray(orders) ? [...orders] : [];
+  const nowIso = new Date().toISOString();
+  const incomingId = incoming.id || `mrt-${Date.now()}`;
+  const existingIndex = next.findIndex((order) => order && order.id === incomingId);
+
+  const payload = {
+    id: incomingId,
+    createdAt: incoming.createdAt || nowIso,
+    updatedAt: nowIso,
+    productId: incoming.productId || "",
+    productName: incoming.productName || "Order",
+    total: Number(incoming.total) || 0,
+    status: normalizeOrderStatus(incoming.status || "draft"),
+    checkoutUrl: incoming.checkoutUrl || "",
+    notes: incoming.notes || "",
+    events: []
+  };
+
+  if (existingIndex >= 0) {
+    const existing = next[existingIndex] || {};
+    payload.createdAt = existing.createdAt || payload.createdAt;
+    payload.productId = payload.productId || existing.productId || "";
+    payload.productName = payload.productName || existing.productName || "Order";
+    payload.total = payload.total || Number(existing.total) || 0;
+    payload.checkoutUrl = payload.checkoutUrl || existing.checkoutUrl || "";
+    payload.notes = payload.notes || existing.notes || "";
+    payload.events = Array.isArray(existing.events) ? [...existing.events] : [];
+    next.splice(existingIndex, 1);
+  }
+
+  const eventEntry = {
+    at: nowIso,
+    status: payload.status,
+    note: incoming.eventNote || ""
+  };
+  payload.events.unshift(eventEntry);
+  payload.events = payload.events.slice(0, 30);
+
+  next.unshift(payload);
+  next.sort((a, b) => new Date(b.updatedAt || b.createdAt || 0).getTime() - new Date(a.updatedAt || a.createdAt || 0).getTime());
+  return next.slice(0, 80);
+}
+
+async function ensureFirebaseAuthClient() {
+  if (!hasFirebaseAuthConfig()) {
+    return null;
+  }
+
+  if (firebaseAuthClient) {
+    return firebaseAuthClient;
+  }
+
+  if (!firebaseAuthClientPromise) {
+    firebaseAuthClientPromise = (async () => {
+      const firebaseBase = `https://www.gstatic.com/firebasejs/${FIREBASE_SDK_VERSION}`;
+      const [{ getApp, getApps, initializeApp }, authModule] = await Promise.all([
+        import(`${firebaseBase}/firebase-app.js`),
+        import(`${firebaseBase}/firebase-auth.js`)
+      ]);
+
+      const app = getApps().length ? getApp() : initializeApp(getFirebaseConfig());
+      firebaseAuthClient = {
+        auth: authModule.getAuth(app),
+        GoogleAuthProvider: authModule.GoogleAuthProvider,
+        createUserWithEmailAndPassword: authModule.createUserWithEmailAndPassword,
+        getRedirectResult: authModule.getRedirectResult,
+        onAuthStateChanged: authModule.onAuthStateChanged,
+        sendPasswordResetEmail: authModule.sendPasswordResetEmail,
+        signInWithEmailAndPassword: authModule.signInWithEmailAndPassword,
+        signInWithPopup: authModule.signInWithPopup,
+        signInWithRedirect: authModule.signInWithRedirect,
+        signOut: authModule.signOut,
+        updateProfile: authModule.updateProfile
+      };
+
+      return firebaseAuthClient;
+    })();
+  }
+
+  return firebaseAuthClientPromise;
+}
+
+async function initializeAccountAuth() {
+  if (authStateBootstrapped) {
+    return;
+  }
+
+  authStateBootstrapped = true;
+
+  if (!hasFirebaseAuthConfig()) {
+    authConfigState = "missing";
+    firebaseAccountProfile = null;
+    return;
+  }
+
+  try {
+    const client = await ensureFirebaseAuthClient();
+    authConfigState = "ready";
+    try {
+      const redirectResult = await client.getRedirectResult(client.auth);
+      if (redirectResult?.user) {
+        firebaseAccountProfile = normalizeFirebaseUser(redirectResult.user);
+        setAccountFeedback("Signed in with Google.", "success");
+      }
+    } catch (error) {
+      setAccountFeedback(getAuthErrorMessage(error), "error");
+    }
+
+    client.onAuthStateChanged(client.auth, (user) => {
+      firebaseAccountProfile = normalizeFirebaseUser(user);
+      if (firebaseAccountProfile) {
+        migrateGuestOrdersToAccount();
+      } else {
+        setAccountFeedback("", "info");
+      }
+      emitStateChange();
+    });
+  } catch {
+    authConfigState = "error";
+    setAccountFeedback("Secure sign-in could not be initialized. Check the Firebase setup and try again.", "error");
+    emitStateChange();
+  }
+}
+
+function getAccountProviderLabel(account) {
+  if (!account || !account.provider) {
+    return "Saved on this device";
+  }
+  if (account.provider === "google.com") {
+    return "Signed in with Google";
+  }
+  if (account.provider === "password") {
+    return "Signed in with email";
+  }
+  return "Signed in";
+}
+
+function getAccountFormValues(form) {
+  const formData = new FormData(form);
+  return {
+    name: String(formData.get("name") || "").trim(),
+    email: String(formData.get("email") || "").trim(),
+    password: String(formData.get("password") || "")
+  };
+}
+
+function getAuthErrorMessage(error) {
+  const code = typeof error?.code === "string" ? error.code : "";
+  const message = typeof error?.message === "string" ? error.message : "";
+
+  if (message.includes("deleted_client") || message.includes("OAuth client was deleted")) {
+    return "Google sign-in is temporarily unavailable because the Google OAuth client for this Firebase project was deleted.";
+  }
+
+  if (message.includes("auth/unauthorized-domain")) {
+    return "This domain is not yet authorized in Firebase Authentication settings.";
+  }
+
+  switch (code) {
+    case "auth/invalid-credential":
+    case "auth/wrong-password":
+    case "auth/user-not-found":
+      return "That email or password was not recognized.";
+    case "auth/email-already-in-use":
+      return "That email already has an account. Try signing in instead.";
+    case "auth/popup-closed-by-user":
+      return "The Google sign-in window was closed before completion.";
+    case "auth/popup-blocked":
+      return "Your browser blocked the Google sign-in popup. Allow popups and try again.";
+    case "auth/weak-password":
+      return "Use a stronger password with at least 6 characters.";
+    case "auth/network-request-failed":
+      return "Network error while contacting the sign-in service. Try again.";
+    default:
+      return "Account sign-in failed. Please try again.";
+  }
+}
+
+async function handleEmailAuthSubmit(form, action) {
+  const values = getAccountFormValues(form);
+  if (!values.email || !values.password) {
+    setAccountFeedback("Email and password are required.", "error");
+    renderUtilityPanel();
+    return;
+  }
+
+  try {
+    const client = await ensureFirebaseAuthClient();
+    if (!client) {
+      setAccountFeedback("Secure sign-in is not configured yet.", "error");
+      renderUtilityPanel();
+      return;
+    }
+
+    setAccountFeedback("", "info");
+
+    if (action === "signup") {
+      const credential = await client.createUserWithEmailAndPassword(client.auth, values.email, values.password);
+      if (values.name) {
+        await client.updateProfile(credential.user, { displayName: values.name });
+      }
+      firebaseAccountProfile = normalizeFirebaseUser(credential.user);
+      if (values.name && firebaseAccountProfile) {
+        firebaseAccountProfile.name = values.name;
+      }
+      setAccountFeedback("Account created successfully.", "success");
+    } else {
+      const credential = await client.signInWithEmailAndPassword(client.auth, values.email, values.password);
+      firebaseAccountProfile = normalizeFirebaseUser(credential.user);
+      setAccountFeedback("Signed in successfully.", "success");
+    }
+  } catch (error) {
+    setAccountFeedback(getAuthErrorMessage(error), "error");
+  }
+
+  renderUtilityPanel();
+}
+
+async function handleGoogleAuth() {
+  try {
+    const client = await ensureFirebaseAuthClient();
+    if (!client) {
+      setAccountFeedback("Google sign-in is not configured yet.", "error");
+      renderUtilityPanel();
+      return;
+    }
+
+    const provider = new client.GoogleAuthProvider();
+    provider.setCustomParameters({ prompt: "select_account" });
+    try {
+      const credential = await client.signInWithPopup(client.auth, provider);
+      googleAuthState = "ready";
+      firebaseAccountProfile = normalizeFirebaseUser(credential.user);
+      setAccountFeedback("Signed in with Google.", "success");
+    } catch (error) {
+      if (typeof error?.code === "string" && error.code === "auth/popup-blocked") {
+        setAccountFeedback("Popup blocked. Redirecting to Google sign-in.", "info");
+        renderUtilityPanel();
+        await client.signInWithRedirect(client.auth, provider);
+        return;
+      }
+
+      const message = typeof error?.message === "string" ? error.message : "";
+      if (message.includes("deleted_client") || message.includes("OAuth client was deleted")) {
+        googleAuthState = "unavailable";
+      }
+      throw error;
+    }
+  } catch (error) {
+    setAccountFeedback(getAuthErrorMessage(error), "error");
+  }
+
+  renderUtilityPanel();
+}
+
+async function handlePasswordReset(form) {
+  const values = getAccountFormValues(form);
+  if (!values.email) {
+    setAccountFeedback("Enter your email address first, then request a password reset.", "error");
+    renderUtilityPanel();
+    return;
+  }
+
+  try {
+    const client = await ensureFirebaseAuthClient();
+    if (!client) {
+      setAccountFeedback("Password reset is not configured yet.", "error");
+      renderUtilityPanel();
+      return;
+    }
+
+    await client.sendPasswordResetEmail(client.auth, values.email);
+    setAccountFeedback("Password reset email sent. Check your inbox.", "success");
+  } catch (error) {
+    setAccountFeedback(getAuthErrorMessage(error), "error");
+  }
+
+  renderUtilityPanel();
 }
 
 function emitStateChange() {
@@ -99,45 +516,91 @@ function saveCartItems(items) {
 }
 
 export function getAccountProfile() {
-  const profile = parseStoredJSON(ACCOUNT_KEY, null);
-  if (!profile || typeof profile !== "object") {
-    return null;
-  }
-  if (!profile.email) {
-    return null;
-  }
-  return profile;
+  return firebaseAccountProfile;
 }
 
-function saveAccountProfile(profile) {
-  writeStoredJSON(ACCOUNT_KEY, profile);
-  emitStateChange();
-}
-
-export function signOutAccount() {
-  localStorage.removeItem(ACCOUNT_KEY);
-  emitStateChange();
-}
-
-function getOrders() {
-  const orders = parseStoredJSON(ORDERS_KEY, []);
-  if (!Array.isArray(orders)) {
-    return [];
+export async function signOutAccount() {
+  if (hasFirebaseAuthConfig()) {
+    try {
+      const client = await ensureFirebaseAuthClient();
+      if (client) {
+        await client.signOut(client.auth);
+      }
+      firebaseAccountProfile = null;
+      setAccountFeedback("Signed out.", "success");
+    } catch {
+      setAccountFeedback("Sign-out failed. Please try again.", "error");
+    }
+    emitStateChange();
+    return;
   }
-  return orders;
+}
+
+function getCurrentAccountOrders() {
+  const ownerKey = getCurrentOrderOwnerKey();
+  return getOrdersForOwner(ownerKey);
 }
 
 export function recordOrder(order) {
-  const orders = getOrders();
-  orders.unshift({
-    id: order.id || `mrt-${Date.now()}`,
-    createdAt: order.createdAt || new Date().toISOString(),
-    productId: order.productId || "",
-    productName: order.productName || "",
-    total: Number(order.total) || 0,
-    status: order.status || "pending"
+  const ownerKey = getCurrentOrderOwnerKey();
+  if (!ownerKey) {
+    const guestOrders = upsertOrderInList(getGuestOrders(), order || {});
+    saveGuestOrders(guestOrders);
+    emitStateChange();
+    return;
+  }
+
+  const next = upsertOrderInList(getOrdersForOwner(ownerKey), order || {});
+  saveOrdersForOwner(ownerKey, next);
+  emitStateChange();
+}
+
+export function updateOrderStatus(orderId, status, eventNote = "") {
+  if (!orderId) {
+    return;
+  }
+
+  const ownerKey = getCurrentOrderOwnerKey();
+  if (!ownerKey) {
+    const nextGuestOrders = upsertOrderInList(getGuestOrders(), {
+      id: orderId,
+      status,
+      eventNote
+    });
+    saveGuestOrders(nextGuestOrders);
+    emitStateChange();
+    return;
+  }
+
+  const next = upsertOrderInList(getOrdersForOwner(ownerKey), {
+    id: orderId,
+    status,
+    eventNote
   });
-  writeStoredJSON(ORDERS_KEY, orders.slice(0, 40));
+  saveOrdersForOwner(ownerKey, next);
+  emitStateChange();
+}
+
+function migrateGuestOrdersToAccount() {
+  const ownerKey = getCurrentOrderOwnerKey();
+  if (!ownerKey) {
+    return;
+  }
+
+  const guestOrders = getGuestOrders();
+  if (!guestOrders.length) {
+    return;
+  }
+
+  let next = getOrdersForOwner(ownerKey);
+  guestOrders.forEach((order) => {
+    next = upsertOrderInList(next, {
+      ...order,
+      eventNote: order?.status === "checkout_started" ? "Recovered from guest session" : "Imported from guest session"
+    });
+  });
+  saveOrdersForOwner(ownerKey, next);
+  saveGuestOrders([]);
   emitStateChange();
 }
 
@@ -186,7 +649,59 @@ function getCartTotal() {
   }, 0);
 }
 
-function getHeaderToolsTemplate() {
+function escapeHTML(value) {
+  return String(value || "")
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/\"/g, "&quot;")
+    .replace(/'/g, "&#39;");
+}
+
+function getAccountDisplayName(account) {
+  if (!account) {
+    return "";
+  }
+
+  const name = typeof account.name === "string" ? account.name.trim() : "";
+  if (name) {
+    return name;
+  }
+
+  const email = typeof account.email === "string" ? account.email.trim() : "";
+  if (!email) {
+    return "Customer";
+  }
+
+  return email.split("@")[0] || "Customer";
+}
+
+function getHeaderToolsTemplate(account) {
+  const accountName = getAccountDisplayName(account);
+  const accountButtonMarkup = account
+    ? `
+      <div class="header-account-status" data-account-status>
+        <span class="header-account-status__label">User signed in:</span>
+        <button class="header-account-status__button" type="button" data-account-menu-toggle aria-haspopup="menu" aria-expanded="false">
+          <span class="header-account-status__name" data-account-display-name>${escapeHTML(accountName)}</span>
+          <span class="header-account-status__caret" aria-hidden="true">▾</span>
+        </button>
+        <div class="header-account-menu" data-account-menu hidden>
+          <div class="header-account-menu__summary">
+            <p class="header-account-menu__eyebrow">Signed in as</p>
+            <strong data-account-menu-name>${escapeHTML(accountName)}</strong>
+            <p data-account-menu-email>${escapeHTML(account.email || "")}</p>
+          </div>
+          <div class="header-account-menu__actions">
+            <button class="header-account-menu__action" type="button" data-account-menu-action="account">My Account</button>
+            <button class="header-account-menu__action" type="button" data-account-menu-action="orders">Orders</button>
+            <button class="header-account-menu__action" type="button" data-account-menu-action="logout">Log Out</button>
+          </div>
+        </div>
+      </div>
+    `
+    : `<button class="header-account-btn" type="button" data-open-account>Sign In</button>`;
+
   return `
     <button class="header-tool-btn" type="button" data-open-cart aria-label="Open cart">
       <span class="header-tool-icon" aria-hidden="true">
@@ -199,7 +714,9 @@ function getHeaderToolsTemplate() {
       <span class="header-tool-label">Cart</span>
       <span class="header-tool-count" data-cart-count>0</span>
     </button>
-    <button class="header-account-btn" type="button" data-open-account>Sign In</button>
+    <div class="header-account-shell" data-header-account-shell>
+      ${accountButtonMarkup}
+    </div>
     <a class="header-call-cta" href="tel:+18135551234" aria-label="Call or text us">
       <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.5 12a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.44 1.27h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L7.91 9a16 16 0 0 0 6 6l1.06-1.06a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg>
       Call or Text
@@ -224,7 +741,7 @@ function ensureUtilityPanel() {
       <button class="account-panel__close" type="button" data-close-account-panel aria-label="Close account panel">&times;</button>
       <h2 id="accountPanelTitle">Account and Cart</h2>
       <div class="account-panel__grid">
-        <section>
+        <section data-panel-section="cart">
           <h3>Your Cart</h3>
           <div data-cart-items></div>
           <p class="scope-note" data-cart-total></p>
@@ -233,32 +750,57 @@ function ensureUtilityPanel() {
             <button class="btn btn-secondary" type="button" data-clear-cart>Clear Cart</button>
           </div>
         </section>
-        <section>
+        <section data-panel-section="account">
           <h3>Account</h3>
+          <p class="scope-note" data-account-auth-note></p>
+          <p class="account-panel__method-label">Sign in with:</p>
+          <div class="account-panel__method-stack">
+            <button class="account-panel__oauth-icon-btn" type="button" data-google-signin aria-label="Continue with Google" title="Continue with Google">
+              <span class="account-panel__provider-icon" aria-hidden="true">
+                <svg viewBox="0 0 18 18" focusable="false">
+                  <path fill="#EA4335" d="M9 7.2v3.72h5.18c-.22 1.2-.91 2.21-1.94 2.88l3.14 2.43c1.83-1.69 2.88-4.18 2.88-7.13 0-.69-.06-1.35-.18-1.99H9z"></path>
+                  <path fill="#34A853" d="M3.64 10.71 2.93 13.4 0.29 15.45A8.98 8.98 0 0 0 9 18c2.43 0 4.47-.8 5.97-2.18l-3.14-2.43c-.87.59-1.98.94-3.83.94-2.33 0-4.31-1.57-5.01-3.68l-.35.03z"></path>
+                  <path fill="#4A90E2" d="M0.29 2.55A8.98 8.98 0 0 0 0 9c0 2.15.77 4.12 2.05 5.66l3.35-2.6A5.4 5.4 0 0 1 3.99 9c0-.96.23-1.86.64-2.66L1.29 3.74z"></path>
+                  <path fill="#FBBC05" d="M9 3.58c1.27 0 2.42.44 3.32 1.3l2.49-2.49C13.46 1.06 11.42 0 9 0 5.49 0 2.46 2.01.99 4.95l3.64 2.83C5.33 5.15 6.93 3.58 9 3.58z"></path>
+                </svg>
+              </span>
+            </button>
+            <span class="account-panel__provider-name">Google</span>
+          </div>
+          <p class="account-panel__auth-divider" data-account-auth-divider>Or use your email</p>
           <form class="form-grid" data-signin-form>
-            <label>
+            <label data-account-name-field>
               Name
-              <input type="text" name="name" placeholder="Your name" required />
+              <input type="text" name="name" placeholder="Your name" autocomplete="name" />
             </label>
             <label>
               Email
-              <input type="email" name="email" placeholder="name@email.com" required />
+              <input type="email" name="email" placeholder="name@email.com" autocomplete="email" required />
             </label>
-            <label>
+            <label data-account-password-field>
               Password
-              <input type="password" name="password" placeholder="Password" required />
+              <input type="password" name="password" placeholder="Password" autocomplete="current-password" />
             </label>
-            <button class="btn btn-primary" type="submit">Sign In</button>
+            <div class="account-panel__auth-actions">
+              <button class="btn btn-primary" type="submit" data-account-action="signin">Sign In</button>
+              <button class="btn btn-secondary" type="submit" data-account-action="signup">Create Account</button>
+            </div>
+            <button class="account-panel__text-action" type="button" data-password-reset>Forgot password?</button>
           </form>
+          <p class="scope-note account-panel__feedback" data-account-feedback hidden></p>
 
           <div data-account-summary hidden>
             <p><strong data-account-name></strong></p>
             <p data-account-email></p>
+            <p class="scope-note" data-account-provider></p>
             <button class="btn btn-secondary" type="button" data-signout>Sign Out</button>
           </div>
 
-          <h3 style="margin-top:.9rem;">Order History</h3>
-          <div data-order-history></div>
+          <div class="account-panel__orders" data-panel-section="orders">
+            <h3 style="margin-top:.9rem;">Order History</h3>
+            <div class="account-panel__order-summary" data-order-summary></div>
+            <div data-order-history></div>
+          </div>
         </section>
       </div>
     </article>
@@ -271,25 +813,38 @@ function ensureUtilityPanel() {
 
   const signinForm = panel.querySelector("[data-signin-form]");
   if (signinForm) {
-    signinForm.addEventListener("submit", (event) => {
+    signinForm.addEventListener("submit", async (event) => {
       event.preventDefault();
-      const formData = new FormData(signinForm);
-      const profile = {
-        name: String(formData.get("name") || "Customer").trim(),
-        email: String(formData.get("email") || "").trim()
-      };
-      if (!profile.email) {
+      const action = event.submitter instanceof HTMLElement ? event.submitter.getAttribute("data-account-action") || "signin" : "signin";
+
+      if (hasFirebaseAuthConfig()) {
+        await handleEmailAuthSubmit(signinForm, action);
         return;
       }
-      saveAccountProfile(profile);
+
+      setAccountFeedback("Sign-in is unavailable until Firebase config is connected for this site.", "error");
       renderUtilityPanel();
+    });
+  }
+
+  const googleSignin = panel.querySelector("[data-google-signin]");
+  if (googleSignin) {
+    googleSignin.addEventListener("click", async () => {
+      await handleGoogleAuth();
+    });
+  }
+
+  const passwordReset = panel.querySelector("[data-password-reset]");
+  if (passwordReset && signinForm) {
+    passwordReset.addEventListener("click", async () => {
+      await handlePasswordReset(signinForm);
     });
   }
 
   const signout = panel.querySelector("[data-signout]");
   if (signout) {
-    signout.addEventListener("click", () => {
-      signOutAccount();
+    signout.addEventListener("click", async () => {
+      await signOutAccount();
       renderUtilityPanel();
     });
   }
@@ -322,13 +877,42 @@ function ensureUtilityPanel() {
   return panel;
 }
 
+function closeHeaderAccountMenus() {
+  document.querySelectorAll("[data-account-menu]").forEach((menu) => {
+    menu.hidden = true;
+  });
+
+  document.querySelectorAll("[data-account-menu-toggle]").forEach((toggle) => {
+    toggle.setAttribute("aria-expanded", "false");
+  });
+}
+
+function focusUtilityPanelSection(mode) {
+  const panel = document.querySelector("[data-account-panel]");
+  if (!panel) {
+    return;
+  }
+
+  const sectionMap = {
+    cart: '[data-panel-section="cart"]',
+    account: '[data-panel-section="account"]',
+    orders: '[data-panel-section="orders"]'
+  };
+
+  const selector = sectionMap[mode || "account"];
+  const target = selector ? panel.querySelector(selector) : null;
+  if (target) {
+    target.scrollIntoView({ behavior: "smooth", block: "start" });
+  }
+}
+
 function renderHeaderTools() {
   const nodes = document.querySelectorAll("[data-header-tools]");
   const count = getCartCount();
   const account = getAccountProfile();
 
   nodes.forEach((node) => {
-    node.innerHTML = getHeaderToolsTemplate();
+    node.innerHTML = getHeaderToolsTemplate(account);
 
     const countNode = node.querySelector("[data-cart-count]");
     if (countNode) {
@@ -336,9 +920,38 @@ function renderHeaderTools() {
     }
 
     const accountButton = node.querySelector("[data-open-account]");
+    const accountMenuToggle = node.querySelector("[data-account-menu-toggle]");
+    const accountMenu = node.querySelector("[data-account-menu]");
+
     if (accountButton) {
-      accountButton.textContent = account ? "My Account" : "Sign In";
+      accountButton.textContent = "Sign In";
       accountButton.addEventListener("click", () => showUtilityPanel("account"));
+    }
+
+    if (accountMenuToggle && accountMenu) {
+      accountMenuToggle.addEventListener("click", () => {
+        const isOpen = !accountMenu.hidden;
+        closeHeaderAccountMenus();
+        if (!isOpen) {
+          accountMenu.hidden = false;
+          accountMenuToggle.setAttribute("aria-expanded", "true");
+        }
+      });
+
+      accountMenu.querySelectorAll("[data-account-menu-action]").forEach((actionNode) => {
+        actionNode.addEventListener("click", async () => {
+          const action = actionNode.getAttribute("data-account-menu-action");
+          closeHeaderAccountMenus();
+
+          if (action === "logout") {
+            await signOutAccount();
+            renderUtilityPanel();
+            return;
+          }
+
+          showUtilityPanel(action === "orders" ? "orders" : "account");
+        });
+      });
     }
 
     const cartButton = node.querySelector("[data-open-cart]");
@@ -351,15 +964,82 @@ function renderHeaderTools() {
 function renderUtilityPanel() {
   const panel = ensureUtilityPanel();
   const account = getAccountProfile();
-  const orders = getOrders();
+  const orders = getCurrentAccountOrders();
   const cartItems = getCartItems();
 
   const form = panel.querySelector("[data-signin-form]");
   const summary = panel.querySelector("[data-account-summary]");
+  const authNote = panel.querySelector("[data-account-auth-note]");
+  const authDivider = panel.querySelector("[data-account-auth-divider]");
+  const googleButton = panel.querySelector("[data-google-signin]");
+  const nameField = panel.querySelector("[data-account-name-field]");
+  const nameInput = nameField ? nameField.querySelector('input[name="name"]') : null;
+  const passwordField = panel.querySelector("[data-account-password-field]");
+  const passwordInput = passwordField ? passwordField.querySelector('input[name="password"]') : null;
+  const primaryAction = panel.querySelector('[data-account-action="signin"]');
+  const createAction = panel.querySelector('[data-account-action="signup"]');
+  const feedbackNode = panel.querySelector("[data-account-feedback]");
+  const accountProvider = panel.querySelector("[data-account-provider]");
+  const firebaseReady = hasFirebaseAuthConfig();
 
   if (form && summary) {
     form.hidden = Boolean(account);
     summary.hidden = !account;
+  }
+
+  if (authNote) {
+    if (authConfigState === "error") {
+      authNote.textContent = "Account services are temporarily unavailable. Please try again shortly.";
+    } else if (firebaseReady) {
+      authNote.textContent = "Use Google or your email/password to sign in to your customer account.";
+    } else {
+      authNote.textContent = "Secure sign-in is not active yet for this site. Connect Firebase config to enable customer accounts.";
+    }
+  }
+
+  if (googleButton) {
+    googleButton.hidden = !firebaseReady;
+    googleButton.disabled = !firebaseReady || googleAuthState === "unavailable";
+    googleButton.setAttribute("aria-disabled", String(!firebaseReady || googleAuthState === "unavailable"));
+  }
+
+  if (authDivider) {
+    authDivider.hidden = !firebaseReady;
+  }
+
+  if (nameField) {
+    nameField.hidden = !firebaseReady;
+  }
+
+  if (nameInput) {
+    nameInput.required = false;
+  }
+
+  if (passwordField) {
+    passwordField.hidden = !firebaseReady;
+  }
+
+  if (passwordInput) {
+    passwordInput.required = firebaseReady;
+    if (!firebaseReady) {
+      passwordInput.value = "";
+    }
+  }
+
+  if (primaryAction) {
+    primaryAction.textContent = "Sign In";
+    primaryAction.disabled = !firebaseReady;
+  }
+
+  if (createAction) {
+    createAction.hidden = !firebaseReady;
+    createAction.disabled = !firebaseReady;
+  }
+
+  if (feedbackNode) {
+    feedbackNode.hidden = !accountFeedback.message;
+    feedbackNode.textContent = accountFeedback.message;
+    feedbackNode.setAttribute("data-tone", accountFeedback.tone || "info");
   }
 
   const accountName = panel.querySelector("[data-account-name]");
@@ -369,6 +1049,9 @@ function renderUtilityPanel() {
   }
   if (accountEmail) {
     accountEmail.textContent = account ? account.email || "" : "";
+  }
+  if (accountProvider) {
+    accountProvider.textContent = account ? getAccountProviderLabel(account) : "";
   }
 
   const cartNode = panel.querySelector("[data-cart-items]");
@@ -396,15 +1079,38 @@ function renderUtilityPanel() {
   }
 
   const orderNode = panel.querySelector("[data-order-history]");
+  const orderSummaryNode = panel.querySelector("[data-order-summary]");
+  const activeOrderCount = orders.filter((order) => {
+    const status = normalizeOrderStatus(order?.status);
+    return ["checkout_started", "payment_submitted", "processing", "shipped"].includes(status);
+  }).length;
+
+  if (orderSummaryNode) {
+    if (!account) {
+      orderSummaryNode.innerHTML = "";
+    } else {
+      orderSummaryNode.innerHTML = `
+        <span class="account-order-metric"><strong>${orders.length}</strong><small>Total</small></span>
+        <span class="account-order-metric"><strong>${activeOrderCount}</strong><small>Active</small></span>
+      `;
+    }
+  }
+
   if (orderNode) {
-    if (!orders.length) {
-      orderNode.innerHTML = "<p class=\"scope-note\">No orders yet. Once checkout starts, history appears here.</p>";
+    if (!account) {
+      orderNode.innerHTML = "<p class=\"scope-note\">Sign in to view your order history and status updates.</p>";
+    } else if (!orders.length) {
+      orderNode.innerHTML = "<p class=\"scope-note\">No orders yet. Once you begin checkout, your history appears here.</p>";
     } else {
       orderNode.innerHTML = orders.slice(0, 6).map((order) => `
         <article class="account-panel__line-item">
           <div>
             <strong>${order.productName || "Order"}</strong>
-            <p>${new Date(order.createdAt).toLocaleDateString()} • ${order.status} • ${formatMoney(order.total)}</p>
+            <p>Order ${order.id || "-"}</p>
+            <p>
+              <span class="order-status-pill" data-tone="${getOrderStatusMeta(order.status).tone}">${getOrderStatusMeta(order.status).label}</span>
+              ${new Date(order.createdAt).toLocaleDateString()} • ${formatMoney(order.total)}
+            </p>
           </div>
           <a class="btn btn-secondary" href="contact.html">Support</a>
         </article>
@@ -417,11 +1123,13 @@ function renderUtilityPanel() {
 
 function showUtilityPanel(mode) {
   const panel = ensureUtilityPanel();
+  closeHeaderAccountMenus();
   panel.hidden = false;
   panel.setAttribute("aria-hidden", "false");
   panel.setAttribute("data-open-mode", mode || "account");
   document.body.style.overflow = "hidden";
   renderUtilityPanel();
+  focusUtilityPanelSection(mode);
 }
 
 function hideUtilityPanel() {
@@ -593,6 +1301,7 @@ export function initHeaderUtilities() {
     return;
   }
 
+  initializeAccountAuth();
   ensureUtilityPanel();
   ensureMobileMenuEnhancements();
   ensureFooterEnhancements();
@@ -602,10 +1311,26 @@ export function initHeaderUtilities() {
   if (!window.__mrtEscCloseListener) {
     document.addEventListener("keydown", (event) => {
       if (event.key === "Escape") {
+        closeHeaderAccountMenus();
         hideUtilityPanel();
       }
     });
     window.__mrtEscCloseListener = true;
+  }
+
+  if (!window.__mrtHeaderMenuOutsideListener) {
+    document.addEventListener("click", (event) => {
+      const target = event.target;
+      if (!(target instanceof Node)) {
+        return;
+      }
+
+      const insideAccountShell = target instanceof Element ? target.closest("[data-header-account-shell]") : null;
+      if (!insideAccountShell) {
+        closeHeaderAccountMenus();
+      }
+    });
+    window.__mrtHeaderMenuOutsideListener = true;
   }
 
   if (!window.__mrtHeaderStateListener) {
