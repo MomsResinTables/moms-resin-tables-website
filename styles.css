@@ -351,11 +351,6 @@ img {
   background: #f5e7d8;
 }
 
-.account-panel__signed-in {
-  display: grid;
-  gap: 0.55rem;
-}
-
 .header-tool-icon {
   width: 16px;
   height: 16px;

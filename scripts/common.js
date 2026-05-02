@@ -527,7 +527,7 @@ export async function signOutAccount() {
         await client.signOut(client.auth);
       }
       firebaseAccountProfile = null;
-      setAccountFeedback("Signed out.", "success");
+      setAccountFeedback("", "info");
     } catch {
       setAccountFeedback("Sign-out failed. Please try again.", "error");
     }
@@ -819,15 +819,6 @@ function ensureUtilityPanel() {
             </form>
             <p class="scope-note account-panel__feedback" data-account-feedback hidden></p>
           </div>
-
-          <div class="account-panel__signed-in" data-account-signed-in hidden>
-            <p class="scope-note">You are signed in as <strong data-account-email-inline></strong>.</p>
-            <p class="scope-note">Use the top-right account menu for your dashboard, order history, and support options.</p>
-            <div class="hero-actions">
-              <button class="btn btn-secondary" type="button" data-account-menu-shortcut>Open Dashboard Menu</button>
-              <button class="btn btn-secondary" type="button" data-signout>Sign Out</button>
-            </div>
-          </div>
         </section>
       </div>
     </article>
@@ -876,14 +867,6 @@ function ensureUtilityPanel() {
     });
   }
 
-  const dashboardShortcut = panel.querySelector("[data-account-menu-shortcut]");
-  if (dashboardShortcut) {
-    dashboardShortcut.addEventListener("click", () => {
-      hideUtilityPanel();
-      openHeaderAccountMenu();
-    });
-  }
-
   const clearCart = panel.querySelector("[data-clear-cart]");
   if (clearCart) {
     clearCart.addEventListener("click", () => {
@@ -920,23 +903,6 @@ function closeHeaderAccountMenus() {
   document.querySelectorAll("[data-account-menu-toggle]").forEach((toggle) => {
     toggle.setAttribute("aria-expanded", "false");
   });
-}
-
-function openHeaderAccountMenu() {
-  const toggle = document.querySelector("[data-account-menu-toggle]");
-  if (!toggle) {
-    return;
-  }
-
-  const shell = toggle.closest("[data-header-account-shell]");
-  const menu = shell ? shell.querySelector("[data-account-menu]") : null;
-  if (!menu) {
-    return;
-  }
-
-  closeHeaderAccountMenus();
-  menu.hidden = false;
-  toggle.setAttribute("aria-expanded", "true");
 }
 
 function focusUtilityPanelSection(mode) {
@@ -1030,8 +996,6 @@ function renderUtilityPanel() {
 
   const form = panel.querySelector("[data-signin-form]");
   const authShell = panel.querySelector("[data-account-auth-shell]");
-  const signedInShell = panel.querySelector("[data-account-signed-in]");
-  const accountInlineEmail = panel.querySelector("[data-account-email-inline]");
   const authNote = panel.querySelector("[data-account-auth-note]");
   const authDivider = panel.querySelector("[data-account-auth-divider]");
   const googleButton = panel.querySelector("[data-google-signin]");
@@ -1065,14 +1029,6 @@ function renderUtilityPanel() {
 
   if (authShell) {
     authShell.hidden = Boolean(account);
-  }
-
-  if (signedInShell) {
-    signedInShell.hidden = !account;
-  }
-
-  if (accountInlineEmail) {
-    accountInlineEmail.textContent = account ? account.email || "" : "";
   }
 
   if (authNote) {
