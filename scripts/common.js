@@ -783,9 +783,8 @@ function ensureUtilityPanel() {
           <h3 data-account-panel-heading>Account</h3>
           <div data-account-auth-shell>
             <p class="scope-note" data-account-auth-note></p>
-            <p class="account-panel__method-label">Sign in with:</p>
             <div class="account-panel__method-stack">
-              <button class="account-panel__oauth-icon-btn" type="button" data-google-signin aria-label="Continue with Google" title="Continue with Google">
+              <button class="account-panel__oauth-pill-btn" type="button" data-google-signin aria-label="Sign in with Google" title="Sign in with Google">
                 <span class="account-panel__provider-icon" aria-hidden="true">
                   <svg viewBox="0 0 18 18" focusable="false">
                     <path fill="#EA4335" d="M9 7.2v3.72h5.18c-.22 1.2-.91 2.21-1.94 2.88l3.14 2.43c1.83-1.69 2.88-4.18 2.88-7.13 0-.69-.06-1.35-.18-1.99H9z"></path>
@@ -794,8 +793,8 @@ function ensureUtilityPanel() {
                     <path fill="#FBBC05" d="M9 3.58c1.27 0 2.42.44 3.32 1.3l2.49-2.49C13.46 1.06 11.42 0 9 0 5.49 0 2.46 2.01.99 4.95l3.64 2.83C5.33 5.15 6.93 3.58 9 3.58z"></path>
                   </svg>
                 </span>
+                <span>Sign in with Google</span>
               </button>
-              <span class="account-panel__provider-name">Google</span>
             </div>
             <p class="account-panel__auth-divider" data-account-auth-divider>Or use your email</p>
             <form class="form-grid" data-signin-form>

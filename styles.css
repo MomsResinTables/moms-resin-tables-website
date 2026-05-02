@@ -1628,41 +1628,37 @@ textarea {
   grid-template-columns: 1fr;
 }
 
-.account-panel__method-label {
-  margin: 0.35rem 0 0.45rem;
-  font-size: 0.72rem;
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-  color: #7a6553;
-}
-
 .account-panel__method-stack {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.55rem;
+  display: flex;
   margin-bottom: 0.7rem;
 }
 
-.account-panel__oauth-icon-btn {
-  width: 44px;
-  height: 44px;
+.account-panel__oauth-pill-btn {
+  width: 100%;
+  min-height: 44px;
+  padding: 0.6rem 0.9rem;
   border-radius: 999px;
   border: 1px solid #ddc8b2;
   background: #fff;
   display: inline-flex;
   align-items: center;
   justify-content: center;
+  gap: 0.5rem;
+  font: inherit;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #4b382a;
   box-shadow: 0 8px 20px rgba(60, 38, 20, 0.08);
   cursor: pointer;
 }
 
-.account-panel__oauth-icon-btn:hover {
+.account-panel__oauth-pill-btn:hover {
   transform: translateY(-1px);
   box-shadow: 0 12px 24px rgba(60, 38, 20, 0.12);
 }
 
-.account-panel__oauth-icon-btn[disabled],
-.account-panel__oauth-icon-btn[aria-disabled="true"] {
+.account-panel__oauth-pill-btn[disabled],
+.account-panel__oauth-pill-btn[aria-disabled="true"] {
   opacity: 0.45;
   cursor: not-allowed;
   transform: none;
@@ -1680,12 +1676,6 @@ textarea {
 .account-panel__provider-icon svg {
   width: 18px;
   height: 18px;
-}
-
-.account-panel__provider-name {
-  font-size: 0.9rem;
-  font-weight: 600;
-  color: #4b382a;
 }
 
 .account-panel__auth-divider {
