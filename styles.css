@@ -1625,6 +1625,14 @@ textarea {
   gap: 1rem;
 }
 
+.account-panel--auth-only .account-panel__card {
+  width: min(560px, 100%);
+}
+
+.account-panel--auth-only .account-panel__grid {
+  grid-template-columns: 1fr;
+}
+
 .account-panel__method-label {
   margin: 0.35rem 0 0.45rem;
   font-size: 0.72rem;

@@ -768,10 +768,10 @@ function ensureUtilityPanel() {
     <div class="account-panel__backdrop" data-close-account-panel></div>
     <article class="account-panel__card" role="dialog" aria-modal="true" aria-labelledby="accountPanelTitle">
       <button class="account-panel__close" type="button" data-close-account-panel aria-label="Close account panel">&times;</button>
-      <h2 id="accountPanelTitle">Account and Cart</h2>
+      <h2 id="accountPanelTitle" data-account-panel-title>Account and Cart</h2>
       <div class="account-panel__grid">
-        <section data-panel-section="cart">
-          <h3>Your Cart</h3>
+        <section data-panel-section="cart" data-cart-panel-section>
+          <h3 data-cart-panel-heading>Your Cart</h3>
           <div data-cart-items></div>
           <p class="scope-note" data-cart-total></p>
           <div class="hero-actions">
@@ -780,7 +780,7 @@ function ensureUtilityPanel() {
           </div>
         </section>
         <section data-panel-section="account">
-          <h3>Account</h3>
+          <h3 data-account-panel-heading>Account</h3>
           <div data-account-auth-shell>
             <p class="scope-note" data-account-auth-note></p>
             <p class="account-panel__method-label">Sign in with:</p>
@@ -1020,8 +1020,13 @@ function renderHeaderTools() {
 
 function renderUtilityPanel() {
   const panel = ensureUtilityPanel();
+  const mode = panel.getAttribute("data-open-mode") || "account";
   const account = getAccountProfile();
   const cartItems = getCartItems();
+  const titleNode = panel.querySelector("[data-account-panel-title]");
+  const cartSection = panel.querySelector("[data-cart-panel-section]");
+  const cartHeading = panel.querySelector("[data-cart-panel-heading]");
+  const accountHeading = panel.querySelector("[data-account-panel-heading]");
 
   const form = panel.querySelector("[data-signin-form]");
   const authShell = panel.querySelector("[data-account-auth-shell]");
@@ -1038,6 +1043,25 @@ function renderUtilityPanel() {
   const createAction = panel.querySelector('[data-account-action="signup"]');
   const feedbackNode = panel.querySelector("[data-account-feedback]");
   const firebaseReady = hasFirebaseAuthConfig();
+  const authOnly = mode === "account" && !account;
+
+  panel.classList.toggle("account-panel--auth-only", authOnly);
+
+  if (cartSection) {
+    cartSection.hidden = authOnly;
+  }
+
+  if (titleNode) {
+    titleNode.textContent = authOnly ? "Sign In" : "Account and Cart";
+  }
+
+  if (cartHeading) {
+    cartHeading.textContent = "Your Cart";
+  }
+
+  if (accountHeading) {
+    accountHeading.textContent = authOnly ? "Sign In" : "Account";
+  }
 
   if (authShell) {
     authShell.hidden = Boolean(account);
