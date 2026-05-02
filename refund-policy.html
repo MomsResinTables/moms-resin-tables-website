@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="icon" type="image/x-icon" href="assets/icons/favicon.ico" />
+  <link rel="icon" type="image/png" sizes="32x32" href="assets/icons/logo-32.png" />
+  <link rel="icon" type="image/png" sizes="16x16" href="assets/icons/logo-16.png" />
+  <link rel="apple-touch-icon" sizes="180x180" href="assets/icons/logo-180.png" />
+  <title>Refund Policy | Mom's Resin Tables</title>
+  <meta name="description" content="Refund and cancellation policy for tabletop purchases and custom commissions from Mom's Resin Tables." />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <header class="site-header">
+    <div class="announce" data-announcement></div>
+    <div class="nav-wrap">
+      <a class="brand brand-with-logo" href="index.html">
+        <img class="brand-logo" src="assets/images/MomLogoTrans.png" alt="Mom's Resin Tables logo" />
+        <span class="brand-copy">
+          <strong>Mom's Resin Tables</strong>
+          <span>Rare Wood. Handmade Character.</span>
+        </span>
+      </a>
+      <nav class="nav-links" aria-label="Main navigation">
+        <a class="active" href="index.html">Home</a>
+        <a href="about.html">About</a>
+        <a href="custom.html">Custom Build</a>
+        <a href="contact.html">Commissions</a>
+      </nav>
+      <div class="header-tools" data-header-tools></div>
+      <button class="menu-toggle" type="button" aria-expanded="false" data-menu-trigger>Menu</button>
+    </div>
+    <nav class="mobile-menu" data-mobile-menu data-open="false" aria-label="Mobile navigation">
+      <a href="index.html">Home</a>
+      <a href="about.html">About</a>
+      <a href="custom.html">Custom Build</a>
+      <a href="contact.html">Commissions</a>
+    </nav>
+  </header>
+
+  <main>
+    <section class="page-hero">
+      <div class="container">
+        <h1>Refund Policy</h1>
+        <p>Refund guidelines for ready-to-sell pieces and custom commission projects.</p>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="container contact-form">
+        <h2>Ready-to-Sell Pieces</h2>
+        <p>If a shipped item arrives damaged, contact us promptly with photos and packaging details so we can assist with claim and resolution options.</p>
+        <h2>Custom Orders</h2>
+        <p>Custom commissions involve reserved labor and materials. Deposits are typically non-refundable once design scope is approved and production starts.</p>
+        <h2>Cancellations</h2>
+        <p>Cancellations requested before production begins may be eligible for partial or full refund depending on incurred sourcing/prep costs.</p>
+        <h2>Resolution Process</h2>
+        <p>Refund, repair, or replacement outcomes are evaluated case-by-case. We prioritize fair solutions with clear communication.</p>
+        <h2>Contact</h2>
+        <p>For refund-related issues, use <a href="contact-us.html">Contact Us</a> and include order details and photos when applicable.</p>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="container footer-grid">
+      <div>
+        <strong>Mom's Resin Tables</strong>
+        <p>Safety Harbor, Florida</p>
+      </div>
+      <div>
+        <a href="about.html">About</a>
+        <a href="custom.html">Custom Build</a>
+        <a href="contact.html">Commissions</a>
+      </div>
+      <div>
+        <p>Copyright <span data-year></span> Mom's Resin Tables</p>
+      </div>
+    </div>
+  </footer>
+
+  <script type="module">
+    import { initHeaderUtilities, setYear, toggleMobileMenu } from "./scripts/common.js";
+    setYear();
+    toggleMobileMenu();
+    initHeaderUtilities();
+  </script>
+</body>
+</html>

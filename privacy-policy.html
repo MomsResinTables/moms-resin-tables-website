@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="icon" type="image/x-icon" href="assets/icons/favicon.ico" />
+  <link rel="icon" type="image/png" sizes="32x32" href="assets/icons/logo-32.png" />
+  <link rel="icon" type="image/png" sizes="16x16" href="assets/icons/logo-16.png" />
+  <link rel="apple-touch-icon" sizes="180x180" href="assets/icons/logo-180.png" />
+  <title>Privacy Policy | Mom's Resin Tables</title>
+  <meta name="description" content="Privacy practices for Mom's Resin Tables inquiries, custom build requests, and order communications." />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <header class="site-header">
+    <div class="announce" data-announcement></div>
+    <div class="nav-wrap">
+      <a class="brand brand-with-logo" href="index.html">
+        <img class="brand-logo" src="assets/images/MomLogoTrans.png" alt="Mom's Resin Tables logo" />
+        <span class="brand-copy">
+          <strong>Mom's Resin Tables</strong>
+          <span>Rare Wood. Handmade Character.</span>
+        </span>
+      </a>
+      <nav class="nav-links" aria-label="Main navigation">
+        <a class="active" href="index.html">Home</a>
+        <a href="about.html">About</a>
+        <a href="custom.html">Custom Build</a>
+        <a href="contact.html">Commissions</a>
+      </nav>
+      <div class="header-tools" data-header-tools></div>
+      <button class="menu-toggle" type="button" aria-expanded="false" data-menu-trigger>Menu</button>
+    </div>
+    <nav class="mobile-menu" data-mobile-menu data-open="false" aria-label="Mobile navigation">
+      <a href="index.html">Home</a>
+      <a href="about.html">About</a>
+      <a href="custom.html">Custom Build</a>
+      <a href="contact.html">Commissions</a>
+    </nav>
+  </header>
+
+  <main>
+    <section class="page-hero">
+      <div class="container">
+        <h1>Privacy Policy</h1>
+        <p>How we collect and use information for quote requests, custom commissions, and customer support.</p>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="container contact-form">
+        <h2>Information We Collect</h2>
+        <p>We may collect your name, email, shipping zip code, project details, and any optional files you submit through forms.</p>
+        <h2>How Information Is Used</h2>
+        <p>Information is used to provide quotes, confirm order details, coordinate production, communicate status updates, and provide support.</p>
+        <h2>Data Sharing</h2>
+        <p>We do not sell personal information. Limited information may be shared with service providers only when needed for payment processing, shipping, or communications.</p>
+        <h2>Retention</h2>
+        <p>Submitted information is retained as needed for legitimate business operations, legal compliance, and customer service continuity.</p>
+        <h2>Contact</h2>
+        <p>If you have privacy questions, use our <a href="contact-us.html">Contact Us</a> page.</p>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="container footer-grid">
+      <div>
+        <strong>Mom's Resin Tables</strong>
+        <p>Safety Harbor, Florida</p>
+      </div>
+      <div>
+        <a href="about.html">About</a>
+        <a href="custom.html">Custom Build</a>
+        <a href="contact.html">Commissions</a>
+      </div>
+      <div>
+        <p>Copyright <span data-year></span> Mom's Resin Tables</p>
+      </div>
+    </div>
+  </footer>
+
+  <script type="module">
+    import { initHeaderUtilities, setYear, toggleMobileMenu } from "./scripts/common.js";
+    setYear();
+    toggleMobileMenu();
+    initHeaderUtilities();
+  </script>
+</body>
+</html>

@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="icon" type="image/x-icon" href="assets/icons/favicon.ico" />
+  <link rel="icon" type="image/png" sizes="32x32" href="assets/icons/logo-32.png" />
+  <link rel="icon" type="image/png" sizes="16x16" href="assets/icons/logo-16.png" />
+  <link rel="apple-touch-icon" sizes="180x180" href="assets/icons/logo-180.png" />
+  <title>Custom Build Policy | Mom's Resin Tables</title>
+  <meta name="description" content="Custom build scope, quote approval, payment expectations, and premium structure pricing for Mom's Resin Tables." />
+  <link rel="canonical" href="https://momsresintables.com/custom-build-policy" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=Sora:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <header class="site-header">
+    <div class="announce" data-announcement></div>
+    <div class="nav-wrap">
+      <a class="brand brand-with-logo" href="index.html">
+        <img class="brand-logo" src="assets/images/MomLogoTrans.png" alt="Mom's Resin Tables logo" />
+        <span class="brand-copy">
+          <strong>Mom's Resin Tables</strong>
+          <span>Rare Wood. Handmade Character.</span>
+        </span>
+      </a>
+      <nav class="nav-links" aria-label="Main navigation">
+        <a class="active" href="index.html">Home</a>
+        <a href="about.html">About</a>
+        <a href="custom.html">Custom Build</a>
+        <a href="contact.html">Commissions</a>
+      </nav>
+      <div class="header-tools" data-header-tools></div>
+      <button class="menu-toggle" type="button" aria-expanded="false" data-menu-trigger>Menu</button>
+    </div>
+    <nav class="mobile-menu" data-mobile-menu data-open="false" aria-label="Mobile navigation">
+      <a href="index.html">Home</a>
+      <a href="about.html">About</a>
+      <a href="custom.html">Custom Build</a>
+      <a href="contact.html">Commissions</a>
+    </nav>
+  </header>
+
+  <main>
+    <section class="page-hero">
+      <div class="container">
+        <h1>Custom Build Policy</h1>
+        <p>These terms explain how tabletop commissions, optional bases, drawers, and quote approvals are handled.</p>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="container contact-form">
+        <h2>1. Scope of Work</h2>
+        <p>Unless otherwise stated in writing, quoted products are tabletop-only builds. Bases, drawer systems, and structural cabinetry are separate upgrades and are priced above tabletop-only work.</p>
+        <h2>2. Quote Approval</h2>
+        <p>All custom projects begin with an estimate. Final pricing is confirmed only after design review, wood availability check, and shipping destination review.</p>
+        <h2>3. Payment Workflow</h2>
+        <p>Custom work may require a deposit before materials are reserved or production begins. Remaining balance and shipping charges are due before delivery or shipment unless otherwise agreed in writing.</p>
+        <h2>4. Design Variation</h2>
+        <p>Each piece is handcrafted. Grain movement, resin flow, edge character, and minor visual variation are part of the artistic process and not considered defects.</p>
+        <h2>5. Structural Add-Ons</h2>
+        <p>Base construction, drawer modules, and similar support structures are premium options. They require additional labor, joinery, and finishing work, and are intentionally priced higher than top-only commissions.</p>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="container footer-grid">
+      <div>
+        <strong>Mom's Resin Tables</strong>
+        <p>Safety Harbor, Florida</p>
+      </div>
+      <div>
+        <a href="custom-build-policy.html">Custom Build Policy</a>
+        <a href="production-lead-times.html">Lead Times</a>
+        <a href="wood-availability-policy.html">Wood Availability</a>
+      </div>
+      <div>
+        <p>Copyright <span data-year></span> Mom's Resin Tables</p>
+      </div>
+    </div>
+  </footer>
+
+  <script type="module">
+    import { initHeaderUtilities, setYear, toggleMobileMenu } from "./scripts/common.js";
+    setYear();
+    toggleMobileMenu();
+    initHeaderUtilities();
+  </script>
+</body>
+</html>

@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="icon" type="image/x-icon" href="assets/icons/favicon.ico" />
+  <link rel="icon" type="image/png" sizes="32x32" href="assets/icons/logo-32.png" />
+  <link rel="icon" type="image/png" sizes="16x16" href="assets/icons/logo-16.png" />
+  <link rel="apple-touch-icon" sizes="180x180" href="assets/icons/logo-180.png" />
+  <title>Terms of Service | Mom's Resin Tables</title>
+  <meta name="description" content="Terms governing use of Mom's Resin Tables website, quote requests, custom orders, and purchase interactions." />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <header class="site-header">
+    <div class="announce" data-announcement></div>
+    <div class="nav-wrap">
+      <a class="brand brand-with-logo" href="index.html">
+        <img class="brand-logo" src="assets/images/MomLogoTrans.png" alt="Mom's Resin Tables logo" />
+        <span class="brand-copy">
+          <strong>Mom's Resin Tables</strong>
+          <span>Rare Wood. Handmade Character.</span>
+        </span>
+      </a>
+      <nav class="nav-links" aria-label="Main navigation">
+        <a class="active" href="index.html">Home</a>
+        <a href="about.html">About</a>
+        <a href="custom.html">Custom Build</a>
+        <a href="contact.html">Commissions</a>
+      </nav>
+      <div class="header-tools" data-header-tools></div>
+      <button class="menu-toggle" type="button" aria-expanded="false" data-menu-trigger>Menu</button>
+    </div>
+    <nav class="mobile-menu" data-mobile-menu data-open="false" aria-label="Mobile navigation">
+      <a href="index.html">Home</a>
+      <a href="about.html">About</a>
+      <a href="custom.html">Custom Build</a>
+      <a href="contact.html">Commissions</a>
+    </nav>
+  </header>
+
+  <main>
+    <section class="page-hero">
+      <div class="container">
+        <h1>Terms of Service</h1>
+        <p>Terms for using this website and engaging Mom's Resin Tables for custom and ready-to-sell pieces.</p>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="container contact-form">
+        <h2>General Use</h2>
+        <p>By using this website, you agree to use it lawfully and not attempt to disrupt, misuse, or interfere with its operation.</p>
+        <h2>Product and Pricing Information</h2>
+        <p>Product details, lead times, and pricing may change. Final pricing and scope are confirmed through direct communication prior to production.</p>
+        <h2>Custom Orders</h2>
+        <p>Custom work may require written scope approval and payment milestones before production begins. Variation in grain and resin character is part of handcrafted work.</p>
+        <h2>Payments and Shipping</h2>
+        <p>Payment and shipping terms are provided at quote/checkout stage. Delivery windows are estimates and may vary due to materials or carrier conditions.</p>
+        <h2>Limitation</h2>
+        <p>Website content is provided as-is. We are not liable for indirect damages arising from website use, order delays beyond reasonable control, or third-party platform outages.</p>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="container footer-grid">
+      <div>
+        <strong>Mom's Resin Tables</strong>
+        <p>Safety Harbor, Florida</p>
+      </div>
+      <div>
+        <a href="about.html">About</a>
+        <a href="custom.html">Custom Build</a>
+        <a href="contact.html">Commissions</a>
+      </div>
+      <div>
+        <p>Copyright <span data-year></span> Mom's Resin Tables</p>
+      </div>
+    </div>
+  </footer>
+
+  <script type="module">
+    import { initHeaderUtilities, setYear, toggleMobileMenu } from "./scripts/common.js";
+    setYear();
+    toggleMobileMenu();
+    initHeaderUtilities();
+  </script>
+</body>
+</html>

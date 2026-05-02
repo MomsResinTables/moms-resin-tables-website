@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="icon" type="image/x-icon" href="assets/icons/favicon.ico" />
+  <link rel="icon" type="image/png" sizes="32x32" href="assets/icons/logo-32.png" />
+  <link rel="icon" type="image/png" sizes="16x16" href="assets/icons/logo-16.png" />
+  <link rel="apple-touch-icon" sizes="180x180" href="assets/icons/logo-180.png" />
+  <title>Wood Availability Policy | Mom's Resin Tables</title>
+  <meta name="description" content="Wood species availability, substitutions, and alternative approval process for Mom's Resin Tables custom builds." />
+  <link rel="canonical" href="https://momsresintables.com/wood-availability-policy" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=Sora:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <header class="site-header">
+    <div class="announce" data-announcement></div>
+    <div class="nav-wrap">
+      <a class="brand brand-with-logo" href="index.html">
+        <img class="brand-logo" src="assets/images/MomLogoTrans.png" alt="Mom's Resin Tables logo" />
+        <span class="brand-copy">
+          <strong>Mom's Resin Tables</strong>
+          <span>Rare Wood. Handmade Character.</span>
+        </span>
+      </a>
+      <nav class="nav-links" aria-label="Main navigation">
+        <a class="active" href="index.html">Home</a>
+        <a href="about.html">About</a>
+        <a href="custom.html">Custom Build</a>
+        <a href="contact.html">Commissions</a>
+      </nav>
+      <div class="header-tools" data-header-tools></div>
+      <button class="menu-toggle" type="button" aria-expanded="false" data-menu-trigger>Menu</button>
+    </div>
+    <nav class="mobile-menu" data-mobile-menu data-open="false" aria-label="Mobile navigation">
+      <a href="index.html">Home</a>
+      <a href="about.html">About</a>
+      <a href="custom.html">Custom Build</a>
+      <a href="contact.html">Commissions</a>
+    </nav>
+  </header>
+
+  <main>
+    <section class="page-hero">
+      <div class="container">
+        <h1>Wood Availability Policy</h1>
+        <p>Some species are rare, reclaimed, seasonal, or inconsistently stocked. This page explains how substitutions are handled.</p>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="container contact-form">
+        <h2>Species Requests</h2>
+        <p>Customers may request one or multiple species during the custom design process. Requests are reviewed after submission and before materials are reserved.</p>
+        <h2>Availability Review</h2>
+        <p>Wood choices shown in the builder represent visual direction only. Specific species, grain figure, tone, and board dimensions are subject to sourcing conditions.</p>
+        <h2>Substitution Approval</h2>
+        <p>If a requested species is unavailable or unsuitable for the build, we will propose alternative woods with a similar tone, grain, or performance profile. No substitution is finalized without customer approval.</p>
+        <h2>Natural Variation</h2>
+        <p>Even within the same species, grain movement, mineral streaking, knots, and color shift can vary significantly. These natural variations are part of handcrafted woodwork.</p>
+        <h2>Quote Impact</h2>
+        <p>Rare, imported, or hard-to-source woods may increase project cost and lead time. Revised pricing is confirmed before production begins.</p>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="container footer-grid">
+      <div>
+        <strong>Mom's Resin Tables</strong>
+        <p>Safety Harbor, Florida</p>
+      </div>
+      <div>
+        <a href="custom-build-policy.html">Custom Build Policy</a>
+        <a href="production-lead-times.html">Lead Times</a>
+        <a href="wood-availability-policy.html">Wood Availability</a>
+      </div>
+      <div>
+        <p>Copyright <span data-year></span> Mom's Resin Tables</p>
+      </div>
+    </div>
+  </footer>
+
+  <script type="module">
+    import { initHeaderUtilities, setYear, toggleMobileMenu } from "./scripts/common.js";
+    setYear();
+    toggleMobileMenu();
+    initHeaderUtilities();
+  </script>
+</body>
+</html>

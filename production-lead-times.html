@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="icon" type="image/x-icon" href="assets/icons/favicon.ico" />
+  <link rel="icon" type="image/png" sizes="32x32" href="assets/icons/logo-32.png" />
+  <link rel="icon" type="image/png" sizes="16x16" href="assets/icons/logo-16.png" />
+  <link rel="apple-touch-icon" sizes="180x180" href="assets/icons/logo-180.png" />
+  <title>Production Lead Times | Mom's Resin Tables</title>
+  <meta name="description" content="Estimated production windows for ready-to-ship and custom tabletop builds from Mom's Resin Tables." />
+  <link rel="canonical" href="https://momsresintables.com/production-lead-times" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=Sora:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <header class="site-header">
+    <div class="announce" data-announcement></div>
+    <div class="nav-wrap">
+      <a class="brand brand-with-logo" href="index.html">
+        <img class="brand-logo" src="assets/images/MomLogoTrans.png" alt="Mom's Resin Tables logo" />
+        <span class="brand-copy">
+          <strong>Mom's Resin Tables</strong>
+          <span>Rare Wood. Handmade Character.</span>
+        </span>
+      </a>
+      <nav class="nav-links" aria-label="Main navigation">
+        <a class="active" href="index.html">Home</a>
+        <a href="about.html">About</a>
+        <a href="custom.html">Custom Build</a>
+        <a href="contact.html">Commissions</a>
+      </nav>
+      <div class="header-tools" data-header-tools></div>
+      <button class="menu-toggle" type="button" aria-expanded="false" data-menu-trigger>Menu</button>
+    </div>
+    <nav class="mobile-menu" data-mobile-menu data-open="false" aria-label="Mobile navigation">
+      <a href="index.html">Home</a>
+      <a href="about.html">About</a>
+      <a href="custom.html">Custom Build</a>
+      <a href="contact.html">Commissions</a>
+    </nav>
+  </header>
+
+  <main>
+    <section class="page-hero">
+      <div class="container">
+        <h1>Production Lead Times</h1>
+        <p>These windows are estimates and may shift based on order queue, curing time, and materials availability.</p>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="container contact-form">
+        <h2>Ready-to-Ship Tops</h2>
+        <p>Most listed one-of-one tops can ship within 3 to 5 business days once payment clears.</p>
+        <h2>Standard Custom Tabletops</h2>
+        <p>Typical tabletop-only commissions generally require 2 to 5 weeks depending on dimensions, resin complexity, and wood sourcing.</p>
+        <h2>Premium Resin Effects</h2>
+        <p>Layered pours, figurine embeds, lighting integration, and moving-water visual effects may extend the schedule because of prep and cure cycles.</p>
+        <h2>Base and Drawer Builds</h2>
+        <p>Custom bases, cabinetry, or drawer structures normally add substantial labor time and may extend production by several additional weeks.</p>
+        <h2>Shipping Timing</h2>
+        <p>Transit time is separate from production time. Final carrier estimates are confirmed after the build is ready and dimensions are packed for shipment.</p>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="container footer-grid">
+      <div>
+        <strong>Mom's Resin Tables</strong>
+        <p>Safety Harbor, Florida</p>
+      </div>
+      <div>
+        <a href="custom-build-policy.html">Custom Build Policy</a>
+        <a href="production-lead-times.html">Lead Times</a>
+        <a href="wood-availability-policy.html">Wood Availability</a>
+      </div>
+      <div>
+        <p>Copyright <span data-year></span> Mom's Resin Tables</p>
+      </div>
+    </div>
+  </footer>
+
+  <script type="module">
+    import { initHeaderUtilities, setYear, toggleMobileMenu } from "./scripts/common.js";
+    setYear();
+    toggleMobileMenu();
+    initHeaderUtilities();
+  </script>
+</body>
+</html>

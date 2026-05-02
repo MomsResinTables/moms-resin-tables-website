@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="icon" type="image/x-icon" href="assets/icons/favicon.ico" />
+  <link rel="icon" type="image/png" sizes="32x32" href="assets/icons/logo-32.png" />
+  <link rel="icon" type="image/png" sizes="16x16" href="assets/icons/logo-16.png" />
+  <link rel="apple-touch-icon" sizes="180x180" href="assets/icons/logo-180.png" />
+  <title>Custom Builder | Mom's Resin Tables</title>
+  <meta name="description" content="Build a custom resin tabletop: set dimensions, wood combinations, resin style, figurines, lights, moving-water effects, and optional base/drawer upgrades." />
+  <link rel="canonical" href="https://momsresintables.com/custom" />
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="Custom Builder | Mom's Resin Tables" />
+  <meta property="og:description" content="Configure your own handcrafted resin tabletop with dynamic wood selection and premium add-ons." />
+  <meta property="og:image" content="assets/images/picwish_8813969001_image1.jpg" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=Sora:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <header class="site-header">
+    <div class="announce" data-announcement></div>
+    <div class="nav-wrap">
+      <a class="brand brand-with-logo" href="index.html">
+        <img class="brand-logo" src="assets/images/MomLogoTrans.png" alt="Mom's Resin Tables logo" />
+        <span class="brand-copy">
+          <strong>Mom's Resin Tables</strong>
+          <span>Rare Wood. Handmade Character.</span>
+        </span>
+      </a>
+      <nav class="nav-links" aria-label="Main navigation">
+        <a class="active" href="index.html">Home</a>
+        <a href="about.html">About</a>
+        <a href="custom.html">Custom Build</a>
+        <a href="contact.html">Commissions</a>
+      </nav>
+      <div class="header-tools" data-header-tools></div>
+      <button class="menu-toggle" type="button" aria-expanded="false" data-menu-trigger>Menu</button>
+    </div>
+    <nav class="mobile-menu" data-mobile-menu data-open="false" aria-label="Mobile navigation">
+      <a href="index.html">Home</a>
+      <a href="about.html">About</a>
+      <a href="custom.html">Custom Build</a>
+      <a href="contact.html">Commissions</a>
+    </nav>
+  </header>
+
+  <main>
+    <section class="page-hero has-hero-img">
+      <div class="container">
+        <h1>Custom Tabletop Builder</h1>
+        <p>
+          Configure size, wood combinations, resin style, decorative embeds, and premium add-ons.
+          If a selected wood is unavailable, we will coordinate alternatives before finalizing your order.
+        </p>
+        <p>
+          Wood pricing is species-based, so lower-cost woods and premium exotic woods are quoted differently.
+          If you want a visual example before we build or before payment, message us and we can provide a sample concept image for review.
+        </p>
+        <p>
+          Review our <a href="custom-build-policy.html">custom build policy</a>, <a href="production-lead-times.html">lead times</a>, and <a href="wood-availability-policy.html">wood availability policy</a> before submitting a request.
+        </p>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="container custom-layout">
+        <article class="contact-form">
+          <h2>Design Inputs</h2>
+          <form class="form-grid" data-custom-form>
+            <label>
+              Tabletop Width (inches)
+              <input type="number" name="width" min="12" max="120" step="1" value="48" required />
+            </label>
+            <label>
+              Tabletop Depth (inches)
+              <input type="number" name="depth" min="12" max="60" step="1" value="24" required />
+            </label>
+            <label>
+              Thickness (inches)
+              <select name="thickness">
+                <option value="1.5">1.5 in — Included</option>
+                <option value="2">2.0 in — +$60</option>
+                <option value="2.5">2.5 in — +$120</option>
+              </select>
+            </label>
+            <label>
+              Quantity
+              <input type="number" name="quantity" min="1" max="20" step="1" value="1" required />
+            </label>
+            <label>
+              Number of Wood Types
+              <input type="number" name="woodCount" min="1" max="6" step="1" value="2" required />
+            </label>
+
+            <p class="scope-note">Wood visuals are actual species photo examples; each real board still varies in grain, tone, and figure. Availability is confirmed before production, and wood pricing varies by species. <a href="wood-image-sources.html">Image sources</a>.</p>
+
+            <div data-wood-selectors></div>
+
+            <label>
+              Resin Style
+              <select name="resinStyle">
+                <option value="clear">Clear Gloss — Included</option>
+                <option value="river">River Channel — +$110</option>
+                <option value="pigmented">Pigmented Art Pour — +$90</option>
+                <option value="layered">Layered Depth Pour — +$130</option>
+              </select>
+            </label>
+            <label>
+              Resin Pour Depth
+              <select name="pourDepth">
+                <option value="standard">Standard (~1 in) — Included</option>
+                <option value="medium">Medium (~1.5 in) — +$60</option>
+                <option value="deep">Deep Pour (~2 in) — +$110</option>
+                <option value="ultradeep">Ultra Deep (~3 in+) — +$200</option>
+              </select>
+            </label>
+            <fieldset class="embed-effects-group">
+              <legend>Decorative Embeds &amp; Effects <span class="legend-note">(select all that apply)</span></legend>
+              <div class="embed-options-grid">
+                <label class="embed-option"><input type="checkbox" name="embed_figurines" /><span>Figurines <em>+$95</em></span></label>
+                <label class="embed-option"><input type="checkbox" name="embed_natural" /><span>Natural Elements <em>+$75</em></span></label>
+                <label class="embed-option"><input type="checkbox" name="embed_mixed" /><span>Mixed Embeds <em>+$125</em></span></label>
+                <label class="embed-option"><input type="checkbox" name="embed_glow" /><span>Glow-in-Dark Powder <em>+$75</em></span></label>
+                <label class="embed-option"><input type="checkbox" name="embed_photo" /><span>Map / Photo Inlay <em>+$100</em></span></label>
+                <label class="embed-option"><input type="checkbox" name="embed_warmled" /><span>Warm LED Accent <em>+$85</em></span></label>
+                <label class="embed-option"><input type="checkbox" name="embed_rgbled" /><span>RGB Color-Changing LED <em>+$120</em></span></label>
+                <label class="embed-option"><input type="checkbox" name="embed_water" /><span>Moving-Water Effect <em>+$180</em></span></label>
+              </div>
+            </fieldset>
+            <label>
+              Polyurethane Finish
+              <select name="finishTier">
+                <option value="included">Included high-build finish — Included</option>
+                <option value="marine">Marine-grade — +$95</option>
+                <option value="museum">Museum-grade multi-coat — +$180</option>
+              </select>
+            </label>
+            <label>
+              Base / Bottom
+              <select name="baseOption" data-base-select>
+                <option value="none">No base — Tabletop only</option>
+                <option value="base">Add a base — choose style below</option>
+              </select>
+            </label>
+            <div class="base-sub-options" data-base-options hidden>
+              <p class="scope-note base-sub-note">Select a base style. Prices are all-in for the base build. <em>Photos are representative — actual builds may vary slightly in finish, proportion, and material.</em></p>
+              <div class="base-frame-grid" data-all-frames>
+                <label class="base-frame-card">
+                  <input type="radio" name="baseStyle" value="hairpin" checked />
+                  <div class="base-frame-img"><img src="assets/bases/hairpin.webp" alt="Hairpin Legs" /></div>
+                  <span class="frame-name">Hairpin Legs</span>
+                  <span class="frame-price">+$550</span>
+                </label>
+                <label class="base-frame-card">
+                  <input type="radio" name="baseStyle" value="aframe" />
+                  <div class="base-frame-img"><img src="assets/bases/aframe.webp" alt="A-Frame" /></div>
+                  <span class="frame-name">A-Frame</span>
+                  <span class="frame-price">+$650</span>
+                </label>
+                <label class="base-frame-card">
+                  <input type="radio" name="baseStyle" value="boxframe" />
+                  <div class="base-frame-img"><img src="assets/bases/boxframe.webp" alt="Box Frame" /></div>
+                  <span class="frame-name">Box Frame</span>
+                  <span class="frame-price">+$625</span>
+                </label>
+                <label class="base-frame-card">
+                  <input type="radio" name="baseStyle" value="xframe" />
+                  <div class="base-frame-img"><img src="assets/bases/xframe.webp" alt="X-Frame Metal" /></div>
+                  <span class="frame-name">X-Frame Metal</span>
+                  <span class="frame-price">+$700</span>
+                </label>
+                <label class="base-frame-card">
+                  <input type="radio" name="baseStyle" value="floating" />
+                  <div class="base-frame-img"><img src="assets/bases/floating.webp" alt="Floating Panel" /></div>
+                  <span class="frame-name">Floating Panel</span>
+                  <span class="frame-price">+$750</span>
+                </label>
+                <label class="base-frame-card">
+                  <input type="radio" name="baseStyle" value="steel-pipe" />
+                  <div class="base-frame-img"><img src="assets/bases/steel-pipe.webp" alt="Welded Steel Pipe" /></div>
+                  <span class="frame-name">Welded Steel Pipe</span>
+                  <span class="frame-price">+$800</span>
+                </label>
+                <label class="base-frame-card">
+                  <input type="radio" name="baseStyle" value="trestle" />
+                  <div class="base-frame-img"><img src="assets/bases/trestle.webp" alt="Trestle Base" /></div>
+                  <span class="frame-name">Trestle Base</span>
+                  <span class="frame-price">+$850</span>
+                </label>
+                <label class="base-frame-card">
+                  <input type="radio" name="baseStyle" value="live-edge-base" />
+                  <div class="base-frame-img"><img src="assets/bases/live-edge-base.webp" alt="Live-Edge Base" /></div>
+                  <span class="frame-name">Live-Edge Base</span>
+                  <span class="frame-price">+$1,100</span>
+                </label>
+                <label class="base-frame-card">
+                  <input type="radio" name="baseStyle" value="waterfall" />
+                  <div class="base-frame-img"><img src="assets/bases/waterfall.webp" alt="Waterfall Edge" /></div>
+                  <span class="frame-name">Waterfall Edge</span>
+                  <span class="frame-price">+$1,500</span>
+                </label>
+                <label class="base-frame-card">
+                  <input type="radio" name="baseStyle" value="pedestal" />
+                  <div class="base-frame-img"><img src="assets/bases/pedestal.webp" alt="Carved Wood Pedestal" /></div>
+                  <span class="frame-name">Carved Wood Pedestal</span>
+                  <span class="frame-price">+$1,600</span>
+                </label>
+                <label class="base-frame-card">
+                  <input type="radio" name="baseStyle" value="drawer-single" />
+                  <div class="base-frame-img"><img src="assets/bases/drawer-single.webp" alt="Single-Drawer Base" /></div>
+                  <span class="frame-name">Single-Drawer Base</span>
+                  <span class="frame-price">+$1,050</span>
+                </label>
+                <label class="base-frame-card">
+                  <input type="radio" name="baseStyle" value="drawer-double" />
+                  <div class="base-frame-img"><img src="assets/bases/drawer-double.webp" alt="Double-Drawer Base" /></div>
+                  <span class="frame-name">Double-Drawer Base</span>
+                  <span class="frame-price">+$1,350</span>
+                </label>
+                <label class="base-frame-card">
+                  <input type="radio" name="baseStyle" value="drawer-triple" />
+                  <div class="base-frame-img"><img src="assets/bases/drawer-triple.webp" alt="Triple-Drawer Base" /></div>
+                  <span class="frame-name">Triple-Drawer Base</span>
+                  <span class="frame-price">+$1,600</span>
+                </label>
+                <label class="base-frame-card">
+                  <input type="radio" name="baseStyle" value="drawer-double-sided" />
+                  <div class="base-frame-img"><img src="assets/bases/drawer-double-sided.webp" alt="Double-Sided Drawer Base" /></div>
+                  <span class="frame-name">Double-Sided Drawers</span>
+                  <span class="frame-price">+$1,900</span>
+                </label>
+              </div>
+            </div>
+            <label>
+              Notes
+              <p class="scope-note" style="margin:0 0 .35rem;">Use the notes field to describe specifics for any option above — for example: which <strong>figurines</strong> (characters, animals, miniatures), which <strong>natural elements</strong> (shells, crystals, dried flowers), preferred <strong>resin colors</strong>, room style, finish sheen level, or any hard constraints. The more detail the better.</p>
+              <textarea name="notes" placeholder="e.g. &#34;I want two small sea turtle figurines mid-table, teal and blue ocean resin, warm LED glow, for a coastal living room. Table will be used as a coffee table on a light wood floor.&#34;"></textarea>
+            </label>
+            <label>
+              Reference Images <span class="legend-note">(optional)</span>
+              <p class="scope-note" style="margin:0 0 .35rem;">Attach inspiration photos, figurine examples, or color references here for your own planning. For actual submission, attach files in the request form that opens when you click "Send This Build Request".</p>
+              <input type="file" name="reference_images_preview" accept="image/*,.pdf" multiple />
+            </label>
+          </form>
+        </article>
+
+        <article class="checkout-summary custom-estimate" data-estimate-card>
+          <h2>Live Estimate</h2>
+          <div class="summary-row"><span>Base tabletop price</span><strong data-est-base>$0</strong></div>
+          <div class="summary-row"><span>Wood mix premium</span><strong data-est-wood>$0</strong></div>
+          <div class="summary-row"><span>Resin and decorative options</span><strong data-est-design>$0</strong></div>
+          <div class="summary-row"><span>Finish upgrade</span><strong data-est-finish>$0</strong></div>
+          <div class="summary-row"><span>Base &amp; frame style</span><strong data-est-structure>$0</strong></div>
+          <div class="summary-row total"><span>Estimated build subtotal</span><strong data-est-total>$0</strong></div>
+          <p class="warning" style="display:block; margin-top: 1rem;">
+            Final quote is confirmed after wood availability and shipping destination review.
+            If you want to preview a look-alike concept before payment, request one in the form.
+          </p>
+          <p class="scope-note">If requested woods are unavailable, we will provide alternative species options before payment.</p>
+          <div class="hero-actions" style="margin-top: 0.8rem;">
+            <button class="btn btn-primary" type="button" data-send-request>Send This Build Request</button>
+            <a class="btn btn-secondary" href="index.html#products">Back to Products</a>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <section class="request-overlay" data-request-overlay hidden aria-hidden="true">
+      <div class="request-overlay__backdrop" data-overlay-close></div>
+      <article class="request-overlay__card" role="dialog" aria-modal="true" aria-labelledby="requestOverlayTitle">
+        <button class="request-overlay__close" type="button" aria-label="Close" data-overlay-close>&times;</button>
+
+        <div data-overlay-step="choice">
+          <h2 id="requestOverlayTitle">Next Step for Your Custom Build</h2>
+          <p class="scope-note" style="margin-top: .4rem;">
+            Choose one path below. If you request a preview, we will respond in 24-48 hours with a look-alike concept image (example only, not the final product).
+          </p>
+          <p class="scope-note" style="margin-top: .2rem;">Pay Now sends you to secure Stripe checkout. Requesting preview keeps payment on hold until you approve.</p>
+          <p class="warning" data-overlay-pay-warning hidden style="margin-top:.4rem;">Stripe payment link is not configured yet. Use the 24-48 hour preview request and we will send your invoice manually.</p>
+          <div class="hero-actions" style="margin-top: .9rem;">
+            <a class="btn btn-primary" data-overlay-pay-now href="checkout.html">Pay Now</a>
+            <button class="btn btn-secondary" type="button" data-overlay-show-request>Wait 24-48 Hours For Preview</button>
+          </div>
+        </div>
+
+        <div data-overlay-step="request" hidden>
+          <h2>Request Your 24-48 Hour Preview</h2>
+          <p class="scope-note" style="margin-top: .4rem;">
+            Send this request and we will email you a look-alike concept image and next steps before payment.
+          </p>
+
+          <form action="https://formspree.io/f/mvgogaaw" method="POST" enctype="multipart/form-data" class="form-grid" data-preview-request-form>
+            <input type="hidden" name="request_type" value="custom_preview" />
+            <input type="hidden" name="source" value="custom_builder_overlay" />
+            <input type="hidden" name="_subject" value="Custom Build Preview Request - Mom's Resin Tables" />
+
+            <label>
+              Name
+              <input type="text" name="name" required />
+            </label>
+            <label>
+              Email
+              <input type="email" name="email" required />
+            </label>
+            <label>
+              Phone (optional)
+              <input type="text" name="phone" />
+            </label>
+            <label>
+              Shipping Zip Code
+              <input type="text" name="zip" required />
+            </label>
+            <label>
+              Attach Reference Images (optional)
+              <input type="file" name="reference_images" accept="image/*,.pdf" multiple />
+            </label>
+            <label>
+              Build Details
+              <textarea name="message" data-preview-message required></textarea>
+            </label>
+
+            <div class="hero-actions" style="margin-top: .3rem;">
+              <button class="btn btn-primary" type="submit">Send Request</button>
+              <button class="btn btn-secondary" type="button" data-overlay-back-choice>Back</button>
+            </div>
+          </form>
+        </div>
+      </article>
+    </section>
+
+    <section class="section faq-section">
+      <div class="container">
+        <div class="section-head">
+          <div>
+            <h2>Frequently Asked Questions</h2>
+            <p>Everything you need to know about the custom build process.</p>
+          </div>
+        </div>
+        <div class="faq-grid" style="margin-top:1.5rem;">
+          <details class="faq-item">
+            <summary>What does the Custom Builder actually do?</summary>
+            <div class="faq-answer">The Custom Builder collects your tabletop specifications — dimensions, wood species, resin style, finish, and optional add-ons — and generates a detailed quote request. It does not process payment. After you submit, we review your build, confirm availability, and send you a Stripe invoice for deposit approval.</div>
+          </details>
+          <details class="faq-item">
+            <summary>Can I choose any combination of wood species?</summary>
+            <div class="faq-answer">Yes, within availability. We source a wide range of domestic and exotic hardwoods including walnut, maple, cherry, ebony, padauk, and live-edge slabs. If a species you want is unavailable at the time of your build, we will offer the closest alternatives before any material is purchased or cut.</div>
+          </details>
+          <details class="faq-item">
+            <summary>What resin styles are available?</summary>
+            <div class="faq-answer">We offer solid color pours, geode and marbled effects, deep ocean river pours, metallic pigment pours, and glow-in-the-dark resin work. Each style uses UV-resistant epoxy cured in layers. The builder lets you describe your preferred look and we will confirm feasibility with your selected wood pairing.</div>
+          </details>
+          <details class="faq-item">
+            <summary>What is the standard finish?</summary>
+            <div class="faq-answer">All tabletops receive a high-build polyurethane top coat by default. This creates a durable, waterproof, and heat-resistant surface. Matte, satin, or gloss sheen options are available. If you want a raw oil or Danish oil finish instead, note it in your builder submission.</div>
+          </details>
+          <details class="faq-item">
+            <summary>Do the prices in the builder include shipping?</summary>
+            <div class="faq-answer">No. The builder estimates base production pricing. Shipping is calculated separately based on your zip code, table dimensions, and weight. We include an accurate shipping estimate in your quote before any payment is collected.</div>
+          </details>
+          <details class="faq-item">
+            <summary>How long does a custom build take?</summary>
+            <div class="faq-answer">Typical lead times are 2–6 weeks from deposit approval. Simpler single-wood-species pieces take less time. Multi-species builds, large river tables, and pieces with complex embed work take longer. We will give you a firm production timeline with your quote.</div>
+          </details>
+          <details class="faq-item">
+            <summary>Can I add a base or legs to my order?</summary>
+            <div class="faq-answer">Yes. Base and leg upgrades are available as premium add-ons in the builder. Options include hairpin legs, steel A-frame bases, and live-edge slab bases. Base pricing is separate from the tabletop and is quoted individually since it depends on your table dimensions and weight.</div>
+          </details>
+          <details class="faq-item">
+            <summary>What if I am not happy with the final piece?</summary>
+            <div class="faq-answer">If you requested a concept preview before production and approved it, we build to match that reference. If there is a craftsmanship defect or the finished piece significantly deviates from the approved design, we will work with you to resolve it. See our refund policy for full details on resolution options.</div>
+          </details>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="container footer-grid">
+      <div>
+        <strong>Mom's Resin Tables</strong>
+        <p>Safety Harbor, Florida</p>
+      </div>
+      <div>
+        <a href="about.html">About</a>
+        <a href="contact.html">Contact</a>
+        <a href="custom-build-policy.html">Custom Build Policy</a>
+        <a href="production-lead-times.html">Lead Times</a>
+        <a href="wood-availability-policy.html">Wood Availability</a>
+      </div>
+      <div>
+        <p>Copyright <span data-year></span> Mom's Resin Tables</p>
+      </div>
+    </div>
+  </footer>
+
+  <script type="module" src="scripts/customizer.js"></script>
+</body>
+</html>
