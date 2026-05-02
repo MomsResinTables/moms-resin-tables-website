@@ -728,9 +728,7 @@ function getHeaderToolsTemplate(account) {
             ${recentOrdersMarkup}
           </div>
           <div class="header-account-menu__actions">
-            <button class="header-account-menu__action" type="button" data-account-menu-action="open-cart">Open Cart</button>
-            <a class="header-account-menu__action header-account-menu__action--link" href="contact.html?topic=order-support">Message Support / Cancel Request</a>
-            <a class="header-account-menu__action header-account-menu__action--link" href="contact.html?topic=tracking-update">Request Tracking Update</a>
+            <button class="header-account-menu__action" type="button" data-account-menu-action="open-dashboard">Open Dashboard</button>
             <button class="header-account-menu__action" type="button" data-account-menu-action="logout">Log Out</button>
           </div>
         </div>
@@ -782,6 +780,7 @@ function ensureUtilityPanel() {
           <div data-cart-items></div>
           <p class="scope-note" data-cart-total></p>
           <div class="hero-actions">
+            <a class="btn btn-primary" href="checkout.html" data-cart-checkout>Checkout</a>
             <a class="btn btn-secondary" href="index.html#products">Continue Shopping</a>
             <button class="btn btn-secondary" type="button" data-clear-cart>Clear Cart</button>
           </div>
@@ -805,10 +804,6 @@ function ensureUtilityPanel() {
             </div>
             <p class="account-panel__auth-divider" data-account-auth-divider>Or use your email</p>
             <form class="form-grid" data-signin-form>
-              <label data-account-name-field>
-                Name
-                <input type="text" name="name" placeholder="Your name" autocomplete="name" />
-              </label>
               <label>
                 Email
                 <input type="email" name="email" placeholder="name@email.com" autocomplete="email" required />
@@ -824,6 +819,17 @@ function ensureUtilityPanel() {
               <button class="account-panel__text-action" type="button" data-password-reset>Forgot password?</button>
             </form>
             <p class="account-panel__feedback" data-account-feedback hidden></p>
+          </div>
+
+          <div class="account-panel__dashboard" data-panel-section="orders" data-account-dashboard hidden>
+            <h3 style="margin-top:.2rem;">Order Dashboard</h3>
+            <div class="account-panel__order-summary" data-order-summary></div>
+            <div data-order-history></div>
+            <p class="account-panel__policy-note">Refunds and cancellations are reviewed case-by-case. Once materials are purchased or production has started, only partial refunds may apply per policy.</p>
+            <div class="hero-actions">
+              <a class="btn btn-secondary" href="contact.html?topic=cancel_refund" data-dashboard-cancel>Request Refund / Cancel</a>
+              <a class="btn btn-secondary" href="contact.html?topic=tracking" data-dashboard-tracking>Request Tracking Update</a>
+            </div>
           </div>
         </section>
       </div>
@@ -973,8 +979,8 @@ function renderHeaderTools() {
             return;
           }
 
-          if (action === "open-cart") {
-            showUtilityPanel("cart");
+          if (action === "open-dashboard") {
+            showUtilityPanel("orders");
             return;
           }
 
@@ -994,6 +1000,7 @@ function renderUtilityPanel() {
   const panel = ensureUtilityPanel();
   const mode = panel.getAttribute("data-open-mode") || "account";
   const account = getAccountProfile();
+  const orders = getCurrentAccountOrders();
   const cartItems = getCartItems();
   const titleNode = panel.querySelector("[data-account-panel-title]");
   const cartSection = panel.querySelector("[data-cart-panel-section]");
@@ -1002,27 +1009,28 @@ function renderUtilityPanel() {
 
   const form = panel.querySelector("[data-signin-form]");
   const authShell = panel.querySelector("[data-account-auth-shell]");
+  const dashboardShell = panel.querySelector("[data-account-dashboard]");
   const authNote = panel.querySelector("[data-account-auth-note]");
   const authDivider = panel.querySelector("[data-account-auth-divider]");
   const googleButton = panel.querySelector("[data-google-signin]");
-  const nameField = panel.querySelector("[data-account-name-field]");
-  const nameInput = nameField ? nameField.querySelector('input[name="name"]') : null;
   const passwordField = panel.querySelector("[data-account-password-field]");
   const passwordInput = passwordField ? passwordField.querySelector('input[name="password"]') : null;
   const primaryAction = panel.querySelector('[data-account-action="signin"]');
   const createAction = panel.querySelector('[data-account-action="signup"]');
   const feedbackNode = panel.querySelector("[data-account-feedback]");
+  const checkoutLink = panel.querySelector("[data-cart-checkout]");
   const firebaseReady = hasFirebaseAuthConfig();
   const authOnly = mode === "account" && !account;
+  const dashboardMode = mode === "orders" && Boolean(account);
 
-  panel.classList.toggle("account-panel--auth-only", authOnly);
+  panel.classList.toggle("account-panel--auth-only", authOnly || dashboardMode);
 
   if (cartSection) {
-    cartSection.hidden = authOnly;
+    cartSection.hidden = authOnly || dashboardMode;
   }
 
   if (titleNode) {
-    titleNode.textContent = authOnly ? "Sign In" : "Account and Cart";
+    titleNode.textContent = authOnly ? "Sign In" : (dashboardMode ? "Order Dashboard" : "Account and Cart");
   }
 
   if (cartHeading) {
@@ -1030,11 +1038,15 @@ function renderUtilityPanel() {
   }
 
   if (accountHeading) {
-    accountHeading.textContent = authOnly ? "Sign In" : "Account";
+    accountHeading.textContent = authOnly ? "Sign In" : (dashboardMode ? "Dashboard" : "Account");
   }
 
   if (authShell) {
     authShell.hidden = Boolean(account);
+  }
+
+  if (dashboardShell) {
+    dashboardShell.hidden = !account;
   }
 
   if (authNote) {
@@ -1055,14 +1067,6 @@ function renderUtilityPanel() {
 
   if (authDivider) {
     authDivider.hidden = !firebaseReady;
-  }
-
-  if (nameField) {
-    nameField.hidden = !firebaseReady;
-  }
-
-  if (nameInput) {
-    nameInput.required = false;
   }
 
   if (passwordField) {
@@ -1114,6 +1118,78 @@ function renderUtilityPanel() {
     const count = getCartCount();
     const total = getCartTotal();
     totalNode.textContent = count ? `${count} item(s) • Est. total ${formatMoney(total)}` : "";
+  }
+
+  if (checkoutLink) {
+    const firstCartItem = cartItems[0] || null;
+    if (!firstCartItem || !firstCartItem.id) {
+      checkoutLink.setAttribute("aria-disabled", "true");
+      checkoutLink.href = "checkout.html";
+    } else {
+      checkoutLink.removeAttribute("aria-disabled");
+      checkoutLink.href = `checkout.html?id=${encodeURIComponent(firstCartItem.id)}`;
+    }
+  }
+
+  const orderSummaryNode = panel.querySelector("[data-order-summary]");
+  const orderNode = panel.querySelector("[data-order-history]");
+  const activeOrderCount = orders.filter((order) => {
+    const status = normalizeOrderStatus(order?.status);
+    return ["checkout_started", "payment_submitted", "processing", "shipped"].includes(status);
+  }).length;
+
+  if (orderSummaryNode) {
+    if (!account) {
+      orderSummaryNode.innerHTML = "";
+    } else {
+      orderSummaryNode.innerHTML = `
+        <span class="account-order-metric"><strong>${orders.length}</strong><small>Total</small></span>
+        <span class="account-order-metric"><strong>${activeOrderCount}</strong><small>Active</small></span>
+      `;
+    }
+  }
+
+  if (orderNode) {
+    if (!account) {
+      orderNode.innerHTML = "<p class=\"scope-note\">Sign in to view your order history and status updates.</p>";
+    } else if (!orders.length) {
+      orderNode.innerHTML = "<p class=\"scope-note\">No orders yet. Once checkout starts, your history appears here.</p>";
+    } else {
+      orderNode.innerHTML = orders.slice(0, 6).map((order) => {
+        const contactUrl = `contact.html?topic=order_support&body=${encodeURIComponent(`Order ID: ${order.id || ""}\nRequest: Please review this order for support.`)}`;
+        return `
+          <article class="account-panel__line-item">
+            <div>
+              <strong>${order.productName || "Order"}</strong>
+              <p>Order ${order.id || "-"}</p>
+              <p>
+                <span class="order-status-pill" data-tone="${getOrderStatusMeta(order.status).tone}">${getOrderStatusMeta(order.status).label}</span>
+                ${new Date(order.createdAt).toLocaleDateString()} • ${formatMoney(order.total)}
+              </p>
+            </div>
+            <a class="btn btn-secondary" href="${contactUrl}">Support</a>
+          </article>
+        `;
+      }).join("");
+    }
+  }
+
+  const cancelLink = panel.querySelector("[data-dashboard-cancel]");
+  if (cancelLink) {
+    const targetOrder = orders[0] || null;
+    const body = targetOrder
+      ? `Order ID: ${targetOrder.id || ""}\nRequest: I would like to request a cancellation/refund review. I understand partial refunds may apply once materials are purchased or production has started.`
+      : "Request: I would like to request a cancellation/refund review. I understand partial refunds may apply once materials are purchased or production has started.";
+    cancelLink.href = `contact.html?topic=cancel_refund&body=${encodeURIComponent(body)}`;
+  }
+
+  const trackingLink = panel.querySelector("[data-dashboard-tracking]");
+  if (trackingLink) {
+    const targetOrder = orders[0] || null;
+    const body = targetOrder
+      ? `Order ID: ${targetOrder.id || ""}\nRequest: Please send my latest tracking update.`
+      : "Request: Please send my latest tracking update.";
+    trackingLink.href = `contact.html?topic=tracking&body=${encodeURIComponent(body)}`;
   }
 
   renderHeaderTools();

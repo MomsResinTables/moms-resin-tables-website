@@ -92,6 +92,9 @@
                 <option value="custom">Custom Commission</option>
                 <option value="reserve">Reserve Existing Piece</option>
                 <option value="invoice">Request Stripe Invoice</option>
+                <option value="order_support">Order Support</option>
+                <option value="cancel_refund">Cancel / Refund Review</option>
+                <option value="tracking">Tracking Update Request</option>
               </select>
             </label>
             <label>
@@ -187,6 +190,7 @@
 
     const params = new URLSearchParams(window.location.search);
     const mode = params.get("mode");
+    const topic = params.get("topic");
     const subject = params.get("subject");
     const body = params.get("body");
 
@@ -201,9 +205,25 @@
       if (builderNote) builderNote.style.display = "block";
     }
 
+    if (topic) {
+      const requestType = document.querySelector('select[name="request_type"]');
+      const topicMap = {
+        shipping: "shipping",
+        custom: "custom",
+        reserve: "reserve",
+        invoice: "invoice",
+        order_support: "order_support",
+        cancel_refund: "cancel_refund",
+        tracking: "tracking"
+      };
+      if (requestType && topicMap[topic]) {
+        requestType.value = topicMap[topic];
+      }
+    }
+
     if (subject) {
       const requestType = document.querySelector('select[name="request_type"]');
-      if (requestType) {
+      if (requestType && !topic) {
         requestType.value = "custom";
       }
     }

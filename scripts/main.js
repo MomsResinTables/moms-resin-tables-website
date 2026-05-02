@@ -13,6 +13,7 @@ function productCardTemplate(product) {
   const shipping = getShippingRate(product);
   const card = document.createElement("article");
   card.className = "product-card";
+  const hasStripeCheckout = typeof product.paymentLink === "string" && product.paymentLink.startsWith("https://buy.stripe.com/");
 
   const current = formatCurrency(product.price);
   const compare = formatCurrency(product.compareAtPrice);
@@ -34,14 +35,17 @@ function productCardTemplate(product) {
       <p class="shipping-note">Nationwide shipping from ${STORE.shipFrom}: from ${formatCurrency(shipping)}</p>
       <div class="card-actions">
         <a class="btn btn-secondary" href="product.html?id=${product.id}">View Details</a>
-        <a class="btn btn-primary" href="checkout.html?id=${product.id}">Buy Now</a>
+        <a class="btn btn-primary" href="${hasStripeCheckout ? `checkout.html?id=${product.id}` : "#"}">${hasStripeCheckout ? "Buy Now" : "Add to Cart"}</a>
       </div>
     </div>
   `;
 
   const buyNow = card.querySelector(".btn-primary");
   if (buyNow) {
-    buyNow.addEventListener("click", () => {
+    buyNow.addEventListener("click", (event) => {
+      if (!hasStripeCheckout) {
+        event.preventDefault();
+      }
       addToCart({
         id: product.id,
         name: product.name,

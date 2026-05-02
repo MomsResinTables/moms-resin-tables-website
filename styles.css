@@ -1783,6 +1783,12 @@ textarea {
   margin-bottom: 0.6rem;
 }
 
+.account-panel__policy-note {
+  margin-top: 0.75rem;
+  font-size: 0.82rem;
+  color: #6f5746;
+}
+
 .account-order-metric {
   display: inline-flex;
   align-items: baseline;
