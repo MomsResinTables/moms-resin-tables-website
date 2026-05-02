@@ -421,6 +421,10 @@ async function handleEmailAuthSubmit(form, action) {
       firebaseAccountProfile = normalizeFirebaseUser(credential.user);
       setAccountFeedback("Signed in successfully.", "success");
     }
+
+    hideUtilityPanel();
+    emitStateChange();
+    return;
   } catch (error) {
     setAccountFeedback(getAuthErrorMessage(error), "error");
   }
@@ -444,6 +448,9 @@ async function handleGoogleAuth() {
       googleAuthState = "ready";
       firebaseAccountProfile = normalizeFirebaseUser(credential.user);
       setAccountFeedback("Signed in with Google.", "success");
+      hideUtilityPanel();
+      emitStateChange();
+      return;
     } catch (error) {
       if (typeof error?.code === "string" && error.code === "auth/popup-blocked") {
         setAccountFeedback("Popup blocked. Redirecting to Google sign-in.", "info");
@@ -782,7 +789,7 @@ function ensureUtilityPanel() {
         <section data-panel-section="account">
           <h3 data-account-panel-heading>Account</h3>
           <div data-account-auth-shell>
-            <p class="scope-note" data-account-auth-note></p>
+            <p data-account-auth-note></p>
             <div class="account-panel__method-stack">
               <button class="account-panel__oauth-pill-btn" type="button" data-google-signin aria-label="Sign in with Google" title="Sign in with Google">
                 <span class="account-panel__provider-icon" aria-hidden="true">
@@ -816,7 +823,7 @@ function ensureUtilityPanel() {
               </div>
               <button class="account-panel__text-action" type="button" data-password-reset>Forgot password?</button>
             </form>
-            <p class="scope-note account-panel__feedback" data-account-feedback hidden></p>
+            <p class="account-panel__feedback" data-account-feedback hidden></p>
           </div>
         </section>
       </div>
