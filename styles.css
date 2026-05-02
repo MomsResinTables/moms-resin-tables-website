@@ -221,12 +221,77 @@ img {
   top: calc(100% + 0.55rem);
   right: 0;
   z-index: 40;
-  width: min(240px, 72vw);
+  width: min(360px, 92vw);
+  max-height: min(72vh, 560px);
+  overflow: auto;
   padding: 0.65rem;
   border: 1px solid #dbc8b6;
   border-radius: 14px;
   background: rgba(255, 250, 243, 0.98);
   box-shadow: 0 16px 30px rgba(56, 36, 24, 0.16);
+}
+
+.header-account-menu__metrics {
+  display: flex;
+  gap: 0.45rem;
+  margin-bottom: 0.6rem;
+}
+
+.header-account-menu__metric {
+  flex: 1;
+  border: 1px solid #e7d7c7;
+  border-radius: 10px;
+  padding: 0.4rem 0.45rem;
+  background: #fff9f2;
+}
+
+.header-account-menu__metric strong,
+.header-account-menu__metric small {
+  display: block;
+}
+
+.header-account-menu__metric strong {
+  color: #3e2f25;
+  font-size: 0.95rem;
+}
+
+.header-account-menu__metric small {
+  margin-top: 0.1rem;
+  color: #7c6350;
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.header-account-menu__orders {
+  border-top: 1px solid #e7d7c7;
+  border-bottom: 1px solid #e7d7c7;
+  padding: 0.5rem 0;
+  margin-bottom: 0.5rem;
+}
+
+.header-account-menu__order-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.45rem;
+  padding: 0.28rem 0;
+}
+
+.header-account-menu__order-item strong,
+.header-account-menu__order-item p {
+  display: block;
+}
+
+.header-account-menu__order-item strong {
+  font-size: 0.8rem;
+  color: #453326;
+}
+
+.header-account-menu__order-item p {
+  margin: 0.08rem 0 0;
+  font-size: 0.72rem;
+  color: #6f5746;
 }
 
 .header-account-menu__summary {
@@ -277,8 +342,18 @@ img {
   cursor: pointer;
 }
 
+.header-account-menu__action--link {
+  display: block;
+  text-decoration: none;
+}
+
 .header-account-menu__action:hover {
   background: #f5e7d8;
+}
+
+.account-panel__signed-in {
+  display: grid;
+  gap: 0.55rem;
 }
 
 .header-tool-icon {

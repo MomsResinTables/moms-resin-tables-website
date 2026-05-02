@@ -678,6 +678,26 @@ function getAccountDisplayName(account) {
 
 function getHeaderToolsTemplate(account) {
   const accountName = getAccountDisplayName(account);
+  const orders = account ? getCurrentAccountOrders() : [];
+  const activeOrderCount = orders.filter((order) => {
+    const status = normalizeOrderStatus(order?.status);
+    return ["checkout_started", "payment_submitted", "processing", "shipped"].includes(status);
+  }).length;
+  const recentOrders = orders.slice(0, 3);
+  const recentOrdersMarkup = recentOrders.length
+    ? recentOrders.map((order) => {
+      const statusMeta = getOrderStatusMeta(order.status);
+      return `
+        <article class="header-account-menu__order-item">
+          <div>
+            <strong>${escapeHTML(order.productName || "Order")}</strong>
+            <p>${escapeHTML(order.id || "-")} • ${new Date(order.createdAt).toLocaleDateString()}</p>
+          </div>
+          <span class="order-status-pill" data-tone="${statusMeta.tone}">${statusMeta.label}</span>
+        </article>
+      `;
+    }).join("")
+    : '<p class="scope-note">No orders yet. Your order history appears here after checkout.</p>';
   const accountButtonMarkup = account
     ? `
       <div class="header-account-status" data-account-status>
@@ -688,13 +708,22 @@ function getHeaderToolsTemplate(account) {
         </button>
         <div class="header-account-menu" data-account-menu hidden>
           <div class="header-account-menu__summary">
-            <p class="header-account-menu__eyebrow">Signed in as</p>
+            <p class="header-account-menu__eyebrow">Account Dashboard</p>
             <strong data-account-menu-name>${escapeHTML(accountName)}</strong>
             <p data-account-menu-email>${escapeHTML(account.email || "")}</p>
           </div>
+          <div class="header-account-menu__metrics">
+            <span class="header-account-menu__metric"><strong>${orders.length}</strong><small>Total Orders</small></span>
+            <span class="header-account-menu__metric"><strong>${activeOrderCount}</strong><small>Active</small></span>
+          </div>
+          <div class="header-account-menu__orders">
+            <p class="header-account-menu__eyebrow">Recent Orders</p>
+            ${recentOrdersMarkup}
+          </div>
           <div class="header-account-menu__actions">
-            <button class="header-account-menu__action" type="button" data-account-menu-action="account">My Account</button>
-            <button class="header-account-menu__action" type="button" data-account-menu-action="orders">Orders</button>
+            <button class="header-account-menu__action" type="button" data-account-menu-action="open-cart">Open Cart</button>
+            <a class="header-account-menu__action header-account-menu__action--link" href="contact.html?topic=order-support">Message Support / Cancel Request</a>
+            <a class="header-account-menu__action header-account-menu__action--link" href="contact.html?topic=tracking-update">Request Tracking Update</a>
             <button class="header-account-menu__action" type="button" data-account-menu-action="logout">Log Out</button>
           </div>
         </div>
@@ -752,54 +781,52 @@ function ensureUtilityPanel() {
         </section>
         <section data-panel-section="account">
           <h3>Account</h3>
-          <p class="scope-note" data-account-auth-note></p>
-          <p class="account-panel__method-label">Sign in with:</p>
-          <div class="account-panel__method-stack">
-            <button class="account-panel__oauth-icon-btn" type="button" data-google-signin aria-label="Continue with Google" title="Continue with Google">
-              <span class="account-panel__provider-icon" aria-hidden="true">
-                <svg viewBox="0 0 18 18" focusable="false">
-                  <path fill="#EA4335" d="M9 7.2v3.72h5.18c-.22 1.2-.91 2.21-1.94 2.88l3.14 2.43c1.83-1.69 2.88-4.18 2.88-7.13 0-.69-.06-1.35-.18-1.99H9z"></path>
-                  <path fill="#34A853" d="M3.64 10.71 2.93 13.4 0.29 15.45A8.98 8.98 0 0 0 9 18c2.43 0 4.47-.8 5.97-2.18l-3.14-2.43c-.87.59-1.98.94-3.83.94-2.33 0-4.31-1.57-5.01-3.68l-.35.03z"></path>
-                  <path fill="#4A90E2" d="M0.29 2.55A8.98 8.98 0 0 0 0 9c0 2.15.77 4.12 2.05 5.66l3.35-2.6A5.4 5.4 0 0 1 3.99 9c0-.96.23-1.86.64-2.66L1.29 3.74z"></path>
-                  <path fill="#FBBC05" d="M9 3.58c1.27 0 2.42.44 3.32 1.3l2.49-2.49C13.46 1.06 11.42 0 9 0 5.49 0 2.46 2.01.99 4.95l3.64 2.83C5.33 5.15 6.93 3.58 9 3.58z"></path>
-                </svg>
-              </span>
-            </button>
-            <span class="account-panel__provider-name">Google</span>
-          </div>
-          <p class="account-panel__auth-divider" data-account-auth-divider>Or use your email</p>
-          <form class="form-grid" data-signin-form>
-            <label data-account-name-field>
-              Name
-              <input type="text" name="name" placeholder="Your name" autocomplete="name" />
-            </label>
-            <label>
-              Email
-              <input type="email" name="email" placeholder="name@email.com" autocomplete="email" required />
-            </label>
-            <label data-account-password-field>
-              Password
-              <input type="password" name="password" placeholder="Password" autocomplete="current-password" />
-            </label>
-            <div class="account-panel__auth-actions">
-              <button class="btn btn-primary" type="submit" data-account-action="signin">Sign In</button>
-              <button class="btn btn-secondary" type="submit" data-account-action="signup">Create Account</button>
+          <div data-account-auth-shell>
+            <p class="scope-note" data-account-auth-note></p>
+            <p class="account-panel__method-label">Sign in with:</p>
+            <div class="account-panel__method-stack">
+              <button class="account-panel__oauth-icon-btn" type="button" data-google-signin aria-label="Continue with Google" title="Continue with Google">
+                <span class="account-panel__provider-icon" aria-hidden="true">
+                  <svg viewBox="0 0 18 18" focusable="false">
+                    <path fill="#EA4335" d="M9 7.2v3.72h5.18c-.22 1.2-.91 2.21-1.94 2.88l3.14 2.43c1.83-1.69 2.88-4.18 2.88-7.13 0-.69-.06-1.35-.18-1.99H9z"></path>
+                    <path fill="#34A853" d="M3.64 10.71 2.93 13.4 0.29 15.45A8.98 8.98 0 0 0 9 18c2.43 0 4.47-.8 5.97-2.18l-3.14-2.43c-.87.59-1.98.94-3.83.94-2.33 0-4.31-1.57-5.01-3.68l-.35.03z"></path>
+                    <path fill="#4A90E2" d="M0.29 2.55A8.98 8.98 0 0 0 0 9c0 2.15.77 4.12 2.05 5.66l3.35-2.6A5.4 5.4 0 0 1 3.99 9c0-.96.23-1.86.64-2.66L1.29 3.74z"></path>
+                    <path fill="#FBBC05" d="M9 3.58c1.27 0 2.42.44 3.32 1.3l2.49-2.49C13.46 1.06 11.42 0 9 0 5.49 0 2.46 2.01.99 4.95l3.64 2.83C5.33 5.15 6.93 3.58 9 3.58z"></path>
+                  </svg>
+                </span>
+              </button>
+              <span class="account-panel__provider-name">Google</span>
             </div>
-            <button class="account-panel__text-action" type="button" data-password-reset>Forgot password?</button>
-          </form>
-          <p class="scope-note account-panel__feedback" data-account-feedback hidden></p>
-
-          <div data-account-summary hidden>
-            <p><strong data-account-name></strong></p>
-            <p data-account-email></p>
-            <p class="scope-note" data-account-provider></p>
-            <button class="btn btn-secondary" type="button" data-signout>Sign Out</button>
+            <p class="account-panel__auth-divider" data-account-auth-divider>Or use your email</p>
+            <form class="form-grid" data-signin-form>
+              <label data-account-name-field>
+                Name
+                <input type="text" name="name" placeholder="Your name" autocomplete="name" />
+              </label>
+              <label>
+                Email
+                <input type="email" name="email" placeholder="name@email.com" autocomplete="email" required />
+              </label>
+              <label data-account-password-field>
+                Password
+                <input type="password" name="password" placeholder="Password" autocomplete="current-password" />
+              </label>
+              <div class="account-panel__auth-actions">
+                <button class="btn btn-primary" type="submit" data-account-action="signin">Sign In</button>
+                <button class="btn btn-secondary" type="submit" data-account-action="signup">Create Account</button>
+              </div>
+              <button class="account-panel__text-action" type="button" data-password-reset>Forgot password?</button>
+            </form>
+            <p class="scope-note account-panel__feedback" data-account-feedback hidden></p>
           </div>
 
-          <div class="account-panel__orders" data-panel-section="orders">
-            <h3 style="margin-top:.9rem;">Order History</h3>
-            <div class="account-panel__order-summary" data-order-summary></div>
-            <div data-order-history></div>
+          <div class="account-panel__signed-in" data-account-signed-in hidden>
+            <p class="scope-note">You are signed in as <strong data-account-email-inline></strong>.</p>
+            <p class="scope-note">Use the top-right account menu for your dashboard, order history, and support options.</p>
+            <div class="hero-actions">
+              <button class="btn btn-secondary" type="button" data-account-menu-shortcut>Open Dashboard Menu</button>
+              <button class="btn btn-secondary" type="button" data-signout>Sign Out</button>
+            </div>
           </div>
         </section>
       </div>
@@ -849,6 +876,14 @@ function ensureUtilityPanel() {
     });
   }
 
+  const dashboardShortcut = panel.querySelector("[data-account-menu-shortcut]");
+  if (dashboardShortcut) {
+    dashboardShortcut.addEventListener("click", () => {
+      hideUtilityPanel();
+      openHeaderAccountMenu();
+    });
+  }
+
   const clearCart = panel.querySelector("[data-clear-cart]");
   if (clearCart) {
     clearCart.addEventListener("click", () => {
@@ -885,6 +920,23 @@ function closeHeaderAccountMenus() {
   document.querySelectorAll("[data-account-menu-toggle]").forEach((toggle) => {
     toggle.setAttribute("aria-expanded", "false");
   });
+}
+
+function openHeaderAccountMenu() {
+  const toggle = document.querySelector("[data-account-menu-toggle]");
+  if (!toggle) {
+    return;
+  }
+
+  const shell = toggle.closest("[data-header-account-shell]");
+  const menu = shell ? shell.querySelector("[data-account-menu]") : null;
+  if (!menu) {
+    return;
+  }
+
+  closeHeaderAccountMenus();
+  menu.hidden = false;
+  toggle.setAttribute("aria-expanded", "true");
 }
 
 function focusUtilityPanelSection(mode) {
@@ -949,6 +1001,11 @@ function renderHeaderTools() {
             return;
           }
 
+          if (action === "open-cart") {
+            showUtilityPanel("cart");
+            return;
+          }
+
           showUtilityPanel(action === "orders" ? "orders" : "account");
         });
       });
@@ -964,11 +1021,12 @@ function renderHeaderTools() {
 function renderUtilityPanel() {
   const panel = ensureUtilityPanel();
   const account = getAccountProfile();
-  const orders = getCurrentAccountOrders();
   const cartItems = getCartItems();
 
   const form = panel.querySelector("[data-signin-form]");
-  const summary = panel.querySelector("[data-account-summary]");
+  const authShell = panel.querySelector("[data-account-auth-shell]");
+  const signedInShell = panel.querySelector("[data-account-signed-in]");
+  const accountInlineEmail = panel.querySelector("[data-account-email-inline]");
   const authNote = panel.querySelector("[data-account-auth-note]");
   const authDivider = panel.querySelector("[data-account-auth-divider]");
   const googleButton = panel.querySelector("[data-google-signin]");
@@ -979,12 +1037,18 @@ function renderUtilityPanel() {
   const primaryAction = panel.querySelector('[data-account-action="signin"]');
   const createAction = panel.querySelector('[data-account-action="signup"]');
   const feedbackNode = panel.querySelector("[data-account-feedback]");
-  const accountProvider = panel.querySelector("[data-account-provider]");
   const firebaseReady = hasFirebaseAuthConfig();
 
-  if (form && summary) {
-    form.hidden = Boolean(account);
-    summary.hidden = !account;
+  if (authShell) {
+    authShell.hidden = Boolean(account);
+  }
+
+  if (signedInShell) {
+    signedInShell.hidden = !account;
+  }
+
+  if (accountInlineEmail) {
+    accountInlineEmail.textContent = account ? account.email || "" : "";
   }
 
   if (authNote) {
@@ -1042,18 +1106,6 @@ function renderUtilityPanel() {
     feedbackNode.setAttribute("data-tone", accountFeedback.tone || "info");
   }
 
-  const accountName = panel.querySelector("[data-account-name]");
-  const accountEmail = panel.querySelector("[data-account-email]");
-  if (accountName) {
-    accountName.textContent = account ? account.name || "Customer" : "";
-  }
-  if (accountEmail) {
-    accountEmail.textContent = account ? account.email || "" : "";
-  }
-  if (accountProvider) {
-    accountProvider.textContent = account ? getAccountProviderLabel(account) : "";
-  }
-
   const cartNode = panel.querySelector("[data-cart-items]");
   if (cartNode) {
     if (!cartItems.length) {
@@ -1076,46 +1128,6 @@ function renderUtilityPanel() {
     const count = getCartCount();
     const total = getCartTotal();
     totalNode.textContent = count ? `${count} item(s) • Est. total ${formatMoney(total)}` : "";
-  }
-
-  const orderNode = panel.querySelector("[data-order-history]");
-  const orderSummaryNode = panel.querySelector("[data-order-summary]");
-  const activeOrderCount = orders.filter((order) => {
-    const status = normalizeOrderStatus(order?.status);
-    return ["checkout_started", "payment_submitted", "processing", "shipped"].includes(status);
-  }).length;
-
-  if (orderSummaryNode) {
-    if (!account) {
-      orderSummaryNode.innerHTML = "";
-    } else {
-      orderSummaryNode.innerHTML = `
-        <span class="account-order-metric"><strong>${orders.length}</strong><small>Total</small></span>
-        <span class="account-order-metric"><strong>${activeOrderCount}</strong><small>Active</small></span>
-      `;
-    }
-  }
-
-  if (orderNode) {
-    if (!account) {
-      orderNode.innerHTML = "<p class=\"scope-note\">Sign in to view your order history and status updates.</p>";
-    } else if (!orders.length) {
-      orderNode.innerHTML = "<p class=\"scope-note\">No orders yet. Once you begin checkout, your history appears here.</p>";
-    } else {
-      orderNode.innerHTML = orders.slice(0, 6).map((order) => `
-        <article class="account-panel__line-item">
-          <div>
-            <strong>${order.productName || "Order"}</strong>
-            <p>Order ${order.id || "-"}</p>
-            <p>
-              <span class="order-status-pill" data-tone="${getOrderStatusMeta(order.status).tone}">${getOrderStatusMeta(order.status).label}</span>
-              ${new Date(order.createdAt).toLocaleDateString()} • ${formatMoney(order.total)}
-            </p>
-          </div>
-          <a class="btn btn-secondary" href="contact.html">Support</a>
-        </article>
-      `).join("");
-    }
   }
 
   renderHeaderTools();
