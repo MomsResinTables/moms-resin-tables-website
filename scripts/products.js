@@ -3,7 +3,7 @@ export const STORE = {
   domain: "momsresintables.com",
   currency: "USD",
   supportEmail: "hello@momsresintables.com",
-  supportPhone: "(813) 773-5553",
+  supportPhone: "(727) 279-5289",
   shipFrom: "Safety Harbor, Florida",
   shippingBands: {
     decor: { label: "Decor", rate: 18 },
