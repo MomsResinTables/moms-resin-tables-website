@@ -347,6 +347,17 @@ function injectGlobalSeo() {
   upsertHeadTag("meta", 'meta[name="twitter:title"]', { name: "twitter:title", content: title });
   upsertHeadTag("meta", 'meta[name="twitter:description"]', { name: "twitter:description", content: description });
   upsertHeadTag("meta", 'meta[name="twitter:image"]', { name: "twitter:image", content: image });
+  upsertHeadTag("meta", 'meta[property="og:site_name"]', { property: "og:site_name", content: STORE.name });
+  upsertHeadTag("meta", 'meta[property="og:locale"]', { property: "og:locale", content: "en_US" });
+  // Pinterest Rich Pins — product meta tags (product pages only)
+  if (product) {
+    upsertHeadTag("meta", 'meta[property="product:price:amount"]', { property: "product:price:amount", content: String(product.price) });
+    upsertHeadTag("meta", 'meta[property="product:price:currency"]', { property: "product:price:currency", content: "USD" });
+    upsertHeadTag("meta", 'meta[property="product:availability"]', { property: "product:availability", content: "in stock" });
+    upsertHeadTag("meta", 'meta[property="product:condition"]', { property: "product:condition", content: "new" });
+    upsertHeadTag("meta", 'meta[property="product:retailer_item_id"]', { property: "product:retailer_item_id", content: product.sku });
+    upsertHeadTag("meta", 'meta[property="product:brand"]', { property: "product:brand", content: STORE.name });
+  }
 
   const schemaGraph = [
     {
@@ -410,6 +421,50 @@ function injectGlobalSeo() {
     getOfferCatalogSchema(),
     getBreadcrumbSchema(config, product, canonicalUrl)
   ];
+
+  // Full Product schema — enables Google rich results with price, availability, shipping
+  if (product) {
+    const shippingRate = getShippingRate(product);
+    schemaGraph.push({
+      "@type": "Product",
+      "@id": `${canonicalUrl}#product`,
+      name: product.name,
+      description: `${product.description} ${product.scopeNote} ${product.dimensions}.`,
+      sku: product.sku,
+      mpn: product.sku,
+      image: (product.images || []).map(img => toAbsoluteUrl(img)),
+      brand: { "@type": "Brand", name: STORE.name },
+      material: product.materials,
+      offers: {
+        "@type": "Offer",
+        "@id": `${canonicalUrl}#offer`,
+        url: canonicalUrl,
+        priceCurrency: "USD",
+        price: String(product.price),
+        priceValidUntil: "2027-12-31",
+        availability: "https://schema.org/InStock",
+        itemCondition: "https://schema.org/NewCondition",
+        seller: { "@id": `${SITE_ORIGIN}/#organization` },
+        shippingDetails: {
+          "@type": "OfferShippingDetails",
+          shippingRate: {
+            "@type": "MonetaryAmount",
+            value: shippingRate,
+            currency: "USD"
+          },
+          shippingDestination: {
+            "@type": "DefinedRegion",
+            addressCountry: "US"
+          },
+          deliveryTime: {
+            "@type": "ShippingDeliveryTime",
+            handlingTime: { "@type": "QuantitativeValue", minValue: 1, maxValue: 2, unitCode: "DAY" },
+            transitTime: { "@type": "QuantitativeValue", minValue: 3, maxValue: 7, unitCode: "DAY" }
+          }
+        }
+      }
+    });
+  }
 
   if (config.service) {
     schemaGraph.push({
