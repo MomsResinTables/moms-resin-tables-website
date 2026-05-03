@@ -1291,7 +1291,7 @@ function getHeaderToolsTemplate(account) {
       <span class="header-tool-label">Cart</span>
       <span class="header-tool-count" data-cart-count>0</span>
     </button>
-    <a class="header-call-cta" href="tel:+18135551234" aria-label="Call or text us">
+    <a class="header-call-cta" href="tel:+18137735553" aria-label="Call or text us">
       <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.5 12a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.44 1.27h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L7.91 9a16 16 0 0 0 6 6l1.06-1.06a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg>
       Call or Text
     </a>
@@ -2048,7 +2048,7 @@ function ensureFooterEnhancements() {
       descCol.innerHTML = `
         <strong class="footer-col-heading">The Studio</strong>
         <p class="footer-desc">Handcrafted resin and wood tabletops built one at a time in Safety Harbor, Florida. Every piece ships nationwide.</p>
-        <p class="footer-desc footer-contact-line"><a href="tel:+18135551234">Call or Text: (813) 555-1234</a></p>
+        <p class="footer-desc footer-contact-line"><a href="tel:+18137735553">Call or Text: (813) 773-5553</a></p>
         <p class="footer-desc"><a href="mailto:hello@momsresintables.com">hello@momsresintables.com</a></p>
       `;
     }
