@@ -2051,7 +2051,7 @@ function ensureFooterEnhancements() {
         <strong class="footer-col-heading">The Studio</strong>
         <p class="footer-desc">Handcrafted resin and wood tabletops built one at a time in Safety Harbor, Florida. Every piece ships nationwide.</p>
         <p class="footer-desc footer-contact-line"><a href="tel:+17272795289">Call or Text: (727) 279-5289</a></p>
-        <p class="footer-desc"><a href="mailto:hello@momsresintables.com">hello@momsresintables.com</a></p>
+        <p class="footer-desc"><a href="mailto:support@momsresintables.com">support@momsresintables.com</a></p>
       `;
     }
   });

@@ -2,7 +2,7 @@ export const STORE = {
   name: "Mom's Resin Tables",
   domain: "momsresintables.com",
   currency: "USD",
-  supportEmail: "hello@momsresintables.com",
+  supportEmail: "support@momsresintables.com",
   supportPhone: "(727) 279-5289",
   shipFrom: "Safety Harbor, Florida",
   shippingBands: {
