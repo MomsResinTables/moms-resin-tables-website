@@ -725,8 +725,66 @@ img {
 
 .card-actions {
   display: flex;
-  gap: 0.5rem;
+  flex-direction: column;
+  gap: 0.55rem;
   margin-top: auto;
+}
+
+.card-qty-row {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.card-qty-row .btn-primary {
+  flex: 1;
+}
+
+.qty-selector {
+  display: flex;
+  align-items: center;
+  border: 1.5px solid #c8b49a;
+  border-radius: 999px;
+  overflow: hidden;
+  background: #fff;
+  height: 38px;
+}
+
+.qty-btn {
+  background: none;
+  border: none;
+  padding: 0 0.7rem;
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #6b4c35;
+  cursor: pointer;
+  line-height: 1;
+  height: 100%;
+  transition: background 0.15s;
+}
+
+.qty-btn:hover {
+  background: #f5ede4;
+}
+
+.qty-input {
+  width: 2.4rem;
+  text-align: center;
+  border: none;
+  border-left: 1px solid #dbc8b6;
+  border-right: 1px solid #dbc8b6;
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: #3b2415;
+  background: #fff;
+  height: 100%;
+  -moz-appearance: textfield;
+}
+
+.qty-input::-webkit-outer-spin-button,
+.qty-input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
 }
 
 .btn {
@@ -2339,8 +2397,12 @@ textarea {
     height: 44px;
   }
 
-  .card-actions {
+  .card-qty-row {
     flex-direction: column;
+  }
+
+  .card-qty-row .btn-primary {
+    width: 100%;
   }
 
   .wood-selector-row {

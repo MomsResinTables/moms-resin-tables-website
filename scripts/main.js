@@ -35,19 +35,42 @@ function productCardTemplate(product) {
       <p class="shipping-note">Nationwide shipping from ${STORE.shipFrom}: from ${formatCurrency(shipping)}</p>
       <div class="card-actions">
         <a class="btn btn-secondary" href="product.html?id=${product.id}">View Details</a>
-        <a class="btn btn-primary" href="#">${hasStripeCheckout ? "Buy Now" : "Add to Cart"}</a>
+        <div class="card-qty-row">
+          <div class="qty-selector">
+            <button class="qty-btn qty-dec" type="button" aria-label="Decrease quantity">&#8722;</button>
+            <input class="qty-input" type="number" value="1" min="1" max="10" aria-label="Quantity" />
+            <button class="qty-btn qty-inc" type="button" aria-label="Increase quantity">&#43;</button>
+          </div>
+          <a class="btn btn-primary" href="#">Buy Now</a>
+        </div>
       </div>
     </div>
   `;
 
   const buyNow = card.querySelector(".btn-primary");
+  const qtyInput = card.querySelector(".qty-input");
+  const qtyDec = card.querySelector(".qty-dec");
+  const qtyInc = card.querySelector(".qty-inc");
+
+  if (qtyDec && qtyInc && qtyInput) {
+    qtyDec.addEventListener("click", () => {
+      const v = parseInt(qtyInput.value, 10) || 1;
+      if (v > 1) qtyInput.value = v - 1;
+    });
+    qtyInc.addEventListener("click", () => {
+      const v = parseInt(qtyInput.value, 10) || 1;
+      if (v < 10) qtyInput.value = v + 1;
+    });
+  }
+
   if (buyNow) {
     buyNow.addEventListener("click", (event) => {
       event.preventDefault();
+      const qty = Math.min(10, Math.max(1, parseInt(qtyInput ? qtyInput.value : "1", 10) || 1));
 
       if (hasStripeCheckout) {
         startProductCheckout(product, {
-          quantity: 1,
+          quantity: qty,
           addToCart: true,
           eventNote: "Customer started checkout from product grid popup."
         });
@@ -59,7 +82,7 @@ function productCardTemplate(product) {
         name: product.name,
         price: product.price,
         image: product.images[0]
-      }, 1);
+      }, qty);
     });
   }
 
