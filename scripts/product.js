@@ -1,12 +1,25 @@
 import { STORE, formatCurrency, getProductById, getShippingRate, isProductAvailable } from "./products.js";
 import { addToCart, initHeaderUtilities, setYear, startProductCheckout, toggleMobileMenu } from "./common.js";
 
+const SITE_ORIGIN = `https://${STORE.domain}`;
+
+function toAbsoluteUrl(value) {
+  if (!value) {
+    return `${SITE_ORIGIN}/assets/images/picwish_8813969001_image1.jpg`;
+  }
+  if (/^https?:\/\//i.test(value)) {
+    return value;
+  }
+  return `${SITE_ORIGIN}/${String(value).replace(/^\//, "")}`;
+}
+
 function hasStripeCheckoutLink(value) {
   return typeof value === "string" && value.startsWith("https://buy.stripe.com/");
 }
 
 function setMeta(product) {
   document.title = `${product.name} | ${STORE.name}`;
+  const canonicalUrl = `${SITE_ORIGIN}/product.html?id=${encodeURIComponent(product.id)}`;
 
   const desc = `${product.name}. ${product.description} ${product.scopeNote} ${product.dimensions}. Ships nationwide from ${STORE.shipFrom}.`;
 
@@ -27,7 +40,32 @@ function setMeta(product) {
 
   const ogImage = document.querySelector('meta[property="og:image"]');
   if (ogImage) {
-    ogImage.setAttribute("content", product.images[0]);
+    ogImage.setAttribute("content", toAbsoluteUrl(product.images[0]));
+  }
+
+  const ogUrl = document.querySelector('meta[property="og:url"]');
+  if (ogUrl) {
+    ogUrl.setAttribute("content", canonicalUrl);
+  }
+
+  const twitterTitle = document.querySelector('meta[name="twitter:title"]');
+  if (twitterTitle) {
+    twitterTitle.setAttribute("content", `${product.name} | ${STORE.name}`);
+  }
+
+  const twitterDesc = document.querySelector('meta[name="twitter:description"]');
+  if (twitterDesc) {
+    twitterDesc.setAttribute("content", desc);
+  }
+
+  const twitterImage = document.querySelector('meta[name="twitter:image"]');
+  if (twitterImage) {
+    twitterImage.setAttribute("content", toAbsoluteUrl(product.images[0]));
+  }
+
+  const canonical = document.querySelector('link[rel="canonical"]');
+  if (canonical) {
+    canonical.setAttribute("href", canonicalUrl);
   }
 }
 
@@ -50,7 +88,7 @@ function injectSchema(product) {
     },
     offers: {
       "@type": "Offer",
-      url: `${window.location.origin}${window.location.pathname}?id=${product.id}`,
+      url: `${SITE_ORIGIN}/product.html?id=${encodeURIComponent(product.id)}`,
       priceCurrency: STORE.currency,
       price: product.price,
       availability: "https://schema.org/InStock",

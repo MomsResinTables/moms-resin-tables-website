@@ -1,4 +1,4 @@
-import { getProductById, getShippingRate } from "./products.js";
+import { STORE, getProductById, getShippingRate } from "./products.js";
 
 export function setYear() {
   const yearNodes = document.querySelectorAll("[data-year]");
@@ -52,6 +52,401 @@ export function setAnnouncement(text) {
   if (node) {
     node.textContent = text;
   }
+}
+
+const SITE_ORIGIN = `https://${STORE.domain}`;
+const DEFAULT_SOCIAL_IMAGE = `${SITE_ORIGIN}/assets/images/picwish_8813969001_image1.jpg`;
+const BRAND_LOGO_URL = `${SITE_ORIGIN}/assets/images/MomLogoTrans.png`;
+const PAGE_SEO = {
+  "index.html": {
+    title: "Handcrafted Resin Tables, River Tables & Live Edge Builds | Mom's Resin Tables",
+    description: "Shop handcrafted resin tables, live edge tabletops, and custom river table builds made in Safety Harbor, Florida with nationwide shipping.",
+    path: "/",
+    pageType: "WebPage",
+    ogType: "website"
+  },
+  "about.html": {
+    title: "About Our Resin Table Studio | Mom's Resin Tables",
+    description: "Learn how Mom's Resin Tables designs handcrafted resin tables, epoxy tabletops, and live edge commissions in Safety Harbor, Florida.",
+    path: "/about.html",
+    pageType: "AboutPage",
+    ogType: "article"
+  },
+  "shop.html": {
+    title: "Shop Resin Tables & Live Edge Tabletops | Mom's Resin Tables",
+    description: "Browse one-of-one resin tabletops, epoxy table designs, and live edge pieces ready to ship nationwide from Florida.",
+    path: "/shop.html",
+    pageType: "CollectionPage",
+    ogType: "website"
+  },
+  "custom.html": {
+    title: "Custom Resin Table Builder | River Table & Live Edge Commissions",
+    description: "Plan a custom resin table or river table build with live edge wood options, epoxy styles, premium bases, and nationwide shipping quotes.",
+    path: "/custom.html",
+    pageType: "WebPage",
+    ogType: "website",
+    service: {
+      name: "Custom Resin Table Commissions",
+      type: "Custom resin table design and build",
+      description: "Custom resin tables, river tables, live edge tabletops, epoxy table builds, and premium base upgrades made to order."
+    }
+  },
+  "contact.html": {
+    title: "Custom Resin Table Quotes, Commissions & Support | Mom's Resin Tables",
+    description: "Request custom resin table quotes, shipping estimates, commission support, and order help for handcrafted epoxy and live edge builds.",
+    path: "/contact.html",
+    pageType: "ContactPage",
+    ogType: "website",
+    service: {
+      name: "Commission Quotes and Order Support",
+      type: "Resin table quotes and customer support",
+      description: "Quote requests, shipping questions, reserve requests, invoices, and support for resin tables and custom commissions."
+    }
+  },
+  "contact-us.html": {
+    title: "Contact Mom's Resin Tables | Studio Support & Quotes",
+    description: "Find the best contact path for custom resin table quotes, order updates, shipping questions, and project support.",
+    path: "/contact-us.html",
+    pageType: "ContactPage",
+    ogType: "website"
+  },
+  "product.html": {
+    title: "Resin Tabletop Product | Mom's Resin Tables",
+    description: "View handcrafted resin tabletop details, pricing, shipping, and care information for one-of-one pieces from Mom's Resin Tables.",
+    path: "/product.html",
+    pageType: "ItemPage",
+    ogType: "product"
+  },
+  "custom-build-policy.html": {
+    title: "Custom Resin Table Build Policy | Mom's Resin Tables",
+    description: "Review custom resin table scope, quote approval, payment milestones, design variation, and premium add-on terms.",
+    path: "/custom-build-policy.html",
+    pageType: "WebPage",
+    ogType: "article"
+  },
+  "production-lead-times.html": {
+    title: "Resin Table Production Lead Times | Mom's Resin Tables",
+    description: "See estimated production windows for ready-to-ship resin tabletops, custom river tables, premium effects, and base builds.",
+    path: "/production-lead-times.html",
+    pageType: "WebPage",
+    ogType: "article"
+  },
+  "wood-availability-policy.html": {
+    title: "Wood Availability Policy for Custom Resin Tables | Mom's Resin Tables",
+    description: "Learn how wood species availability, substitutions, and quote changes are handled for custom resin and live edge table builds.",
+    path: "/wood-availability-policy.html",
+    pageType: "WebPage",
+    ogType: "article"
+  },
+  "privacy-policy.html": {
+    title: "Privacy Policy | Mom's Resin Tables",
+    description: "Read how Mom's Resin Tables handles quote requests, commission details, uploaded files, and customer communications.",
+    path: "/privacy-policy.html",
+    pageType: "WebPage",
+    ogType: "article"
+  },
+  "terms-of-service.html": {
+    title: "Terms of Service | Mom's Resin Tables",
+    description: "Website terms covering product information, custom orders, payments, shipping expectations, and platform use.",
+    path: "/terms-of-service.html",
+    pageType: "WebPage",
+    ogType: "article"
+  },
+  "refund-policy.html": {
+    title: "Refund Policy | Mom's Resin Tables",
+    description: "Review refund, cancellation, damage, and resolution policies for ready-made resin tabletops and custom commissions.",
+    path: "/refund-policy.html",
+    pageType: "WebPage",
+    ogType: "article"
+  },
+  "wood-image-sources.html": {
+    title: "Wood Image Sources | Mom's Resin Tables",
+    description: "Source and license references for wood species images used in the custom resin table builder.",
+    path: "/wood-image-sources.html",
+    pageType: "WebPage",
+    ogType: "article"
+  }
+};
+
+function normalizePageKey(pathname = window.location.pathname) {
+  const cleaned = String(pathname || "").split("?")[0].split("#")[0];
+  let page = cleaned.split("/").pop() || "index.html";
+  if (!page) {
+    return "index.html";
+  }
+  if (!page.includes(".")) {
+    page = page === "index" ? "index.html" : `${page}.html`;
+  }
+  return page;
+}
+
+function toAbsoluteUrl(value) {
+  if (!value) {
+    return DEFAULT_SOCIAL_IMAGE;
+  }
+  if (/^https?:\/\//i.test(value)) {
+    return value;
+  }
+  return `${SITE_ORIGIN}/${String(value).replace(/^\//, "")}`;
+}
+
+function getCurrentProductForSeo() {
+  const params = new URLSearchParams(window.location.search);
+  const id = params.get("id");
+  return id ? getProductById(id) : null;
+}
+
+function getPageSeoConfig() {
+  const pageKey = normalizePageKey();
+  return PAGE_SEO[pageKey] || PAGE_SEO["index.html"];
+}
+
+function upsertHeadTag(tagName, selector, attributes) {
+  const head = document.head;
+  if (!head) {
+    return null;
+  }
+
+  let node = selector ? head.querySelector(selector) : null;
+  if (!node) {
+    node = document.createElement(tagName);
+    head.appendChild(node);
+  }
+
+  Object.entries(attributes).forEach(([key, value]) => {
+    node.setAttribute(key, value);
+  });
+
+  return node;
+}
+
+function getCanonicalUrl(config, product) {
+  if (product) {
+    return `${SITE_ORIGIN}/product.html?id=${encodeURIComponent(product.id)}`;
+  }
+  return config.path === "/" ? `${SITE_ORIGIN}/` : `${SITE_ORIGIN}${config.path}`;
+}
+
+function getFaqSchema() {
+  const items = Array.from(document.querySelectorAll(".faq-item")).map((item) => {
+    const question = item.querySelector("summary")?.textContent?.trim();
+    const answer = item.querySelector(".faq-answer")?.textContent?.trim();
+    if (!question || !answer) {
+      return null;
+    }
+    return {
+      "@type": "Question",
+      name: question,
+      acceptedAnswer: {
+        "@type": "Answer",
+        text: answer
+      }
+    };
+  }).filter(Boolean);
+
+  if (!items.length) {
+    return null;
+  }
+
+  return {
+    "@type": "FAQPage",
+    mainEntity: items
+  };
+}
+
+function getBreadcrumbSchema(config, product, canonicalUrl) {
+  const items = [{
+    "@type": "ListItem",
+    position: 1,
+    name: "Home",
+    item: `${SITE_ORIGIN}/`
+  }];
+
+  const pageKey = normalizePageKey();
+  if (pageKey === "product.html" && product) {
+    items.push({
+      "@type": "ListItem",
+      position: 2,
+      name: "Shop",
+      item: `${SITE_ORIGIN}/shop.html`
+    });
+    items.push({
+      "@type": "ListItem",
+      position: 3,
+      name: product.name,
+      item: canonicalUrl
+    });
+  } else if (config.path !== "/") {
+    items.push({
+      "@type": "ListItem",
+      position: 2,
+      name: document.title,
+      item: canonicalUrl
+    });
+  }
+
+  return {
+    "@type": "BreadcrumbList",
+    itemListElement: items
+  };
+}
+
+function getOfferCatalogSchema() {
+  return {
+    "@type": "OfferCatalog",
+    "@id": `${SITE_ORIGIN}/#offer-catalog`,
+    name: "Resin table products and services",
+    itemListElement: [
+      {
+        "@type": "Offer",
+        itemOffered: {
+          "@type": "Service",
+          name: "Custom resin table builds",
+          serviceType: "Custom resin and river table commissions"
+        }
+      },
+      {
+        "@type": "Offer",
+        itemOffered: {
+          "@type": "Service",
+          name: "Live edge tabletop commissions",
+          serviceType: "Live edge wood and epoxy tabletop design"
+        }
+      },
+      {
+        "@type": "Offer",
+        itemOffered: {
+          "@type": "Service",
+          name: "Ready-made resin tabletop sales",
+          serviceType: "One-of-one resin tabletop products"
+        }
+      }
+    ]
+  };
+}
+
+function injectGlobalSeo() {
+  const config = getPageSeoConfig();
+  const product = normalizePageKey() === "product.html" ? getCurrentProductForSeo() : null;
+  const canonicalUrl = getCanonicalUrl(config, product);
+  const title = product ? `${product.name} | ${STORE.name}` : config.title;
+  const description = product
+    ? `${product.name}. ${product.description} ${product.scopeNote} ${product.dimensions}. Ships nationwide from ${STORE.shipFrom}.`
+    : config.description;
+  const image = product ? toAbsoluteUrl(product.images?.[0]) : DEFAULT_SOCIAL_IMAGE;
+
+  document.title = title;
+  upsertHeadTag("meta", 'meta[name="description"]', { name: "description", content: description });
+  upsertHeadTag("link", 'link[rel="canonical"]', { rel: "canonical", href: canonicalUrl });
+  upsertHeadTag("meta", 'meta[property="og:type"]', { property: "og:type", content: product ? "product" : config.ogType });
+  upsertHeadTag("meta", 'meta[property="og:title"]', { property: "og:title", content: title });
+  upsertHeadTag("meta", 'meta[property="og:description"]', { property: "og:description", content: description });
+  upsertHeadTag("meta", 'meta[property="og:image"]', { property: "og:image", content: image });
+  upsertHeadTag("meta", 'meta[property="og:url"]', { property: "og:url", content: canonicalUrl });
+  upsertHeadTag("meta", 'meta[name="twitter:card"]', { name: "twitter:card", content: "summary_large_image" });
+  upsertHeadTag("meta", 'meta[name="twitter:title"]', { name: "twitter:title", content: title });
+  upsertHeadTag("meta", 'meta[name="twitter:description"]', { name: "twitter:description", content: description });
+  upsertHeadTag("meta", 'meta[name="twitter:image"]', { name: "twitter:image", content: image });
+
+  const schemaGraph = [
+    {
+      "@type": "Organization",
+      "@id": `${SITE_ORIGIN}/#organization`,
+      name: STORE.name,
+      url: `${SITE_ORIGIN}/`,
+      email: STORE.supportEmail,
+      logo: {
+        "@type": "ImageObject",
+        url: BRAND_LOGO_URL
+      }
+    },
+    {
+      "@type": "FurnitureStore",
+      "@id": `${SITE_ORIGIN}/#localbusiness`,
+      name: STORE.name,
+      url: `${SITE_ORIGIN}/`,
+      image: image,
+      email: STORE.supportEmail,
+      address: {
+        "@type": "PostalAddress",
+        addressLocality: "Safety Harbor",
+        addressRegion: "FL",
+        addressCountry: "US"
+      },
+      areaServed: "US",
+      priceRange: "$$",
+      hasOfferCatalog: {
+        "@id": `${SITE_ORIGIN}/#offer-catalog`
+      }
+    },
+    {
+      "@type": "WebSite",
+      "@id": `${SITE_ORIGIN}/#website`,
+      url: `${SITE_ORIGIN}/`,
+      name: STORE.name,
+      publisher: {
+        "@id": `${SITE_ORIGIN}/#organization`
+      }
+    },
+    {
+      "@type": config.pageType,
+      "@id": `${canonicalUrl}#webpage`,
+      url: canonicalUrl,
+      name: title,
+      description: description,
+      isPartOf: {
+        "@id": `${SITE_ORIGIN}/#website`
+      },
+      about: {
+        "@id": `${SITE_ORIGIN}/#localbusiness`
+      },
+      primaryImageOfPage: {
+        "@type": "ImageObject",
+        url: image
+      }
+    },
+    getOfferCatalogSchema(),
+    getBreadcrumbSchema(config, product, canonicalUrl)
+  ];
+
+  if (config.service) {
+    schemaGraph.push({
+      "@type": "Service",
+      "@id": `${canonicalUrl}#service`,
+      name: config.service.name,
+      serviceType: config.service.type,
+      description: config.service.description,
+      provider: {
+        "@id": `${SITE_ORIGIN}/#localbusiness`
+      },
+      areaServed: {
+        "@type": "Country",
+        name: "United States"
+      },
+      availableChannel: {
+        "@type": "ServiceChannel",
+        serviceUrl: canonicalUrl
+      }
+    });
+  }
+
+  const faqSchema = getFaqSchema();
+  if (faqSchema) {
+    schemaGraph.push(faqSchema);
+  }
+
+  let schemaNode = document.querySelector("[data-global-seo-schema]");
+  if (!schemaNode) {
+    schemaNode = document.createElement("script");
+    schemaNode.type = "application/ld+json";
+    schemaNode.setAttribute("data-global-seo-schema", "true");
+    document.head.appendChild(schemaNode);
+  }
+
+  schemaNode.textContent = JSON.stringify({
+    "@context": "https://schema.org",
+    "@graph": schemaGraph
+  });
 }
 
 const CART_KEY = "mrt_cart";
@@ -1684,6 +2079,7 @@ function ensureFooterEnhancements() {
 
 export function initHeaderUtilities() {
   handleCheckoutSuccessMessage();
+  injectGlobalSeo();
 
   const nodes = document.querySelectorAll("[data-header-tools]");
   if (!nodes.length) {

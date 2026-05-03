@@ -9,6 +9,18 @@ import {
 } from "./products.js";
 import { addToCart, initHeaderUtilities, setAnnouncement, setYear, startProductCheckout, toggleMobileMenu } from "./common.js";
 
+const SITE_ORIGIN = `https://${STORE.domain}`;
+
+function toAbsoluteUrl(value) {
+  if (!value) {
+    return `${SITE_ORIGIN}/assets/images/picwish_8813969001_image1.jpg`;
+  }
+  if (/^https?:\/\//i.test(value)) {
+    return value;
+  }
+  return `${SITE_ORIGIN}/${String(value).replace(/^\//, "")}`;
+}
+
 function productCardTemplate(product) {
   const shipping = getShippingRate(product);
   const card = document.createElement("article");
@@ -136,9 +148,10 @@ function injectHomepageSchema() {
     position: index + 1,
     item: {
       "@type": "Product",
+      url: `${SITE_ORIGIN}/product.html?id=${encodeURIComponent(product.id)}`,
       name: product.name,
       sku: product.sku,
-      image: product.images,
+      image: product.images.map((image) => toAbsoluteUrl(image)),
       category: product.category,
       description: product.description,
       offers: {
