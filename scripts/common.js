@@ -503,6 +503,18 @@ function emitStateChange() {
   window.dispatchEvent(new CustomEvent("mrt:state-changed"));
 }
 
+let _scrollLockCount = 0;
+export function lockBodyScroll() {
+  _scrollLockCount += 1;
+  document.body.classList.add("scroll-locked");
+}
+export function unlockBodyScroll() {
+  _scrollLockCount = Math.max(0, _scrollLockCount - 1);
+  if (_scrollLockCount === 0) {
+    document.body.classList.remove("scroll-locked");
+  }
+}
+
 function formatMoney(value) {
   return new Intl.NumberFormat("en-US", {
     style: "currency",
@@ -527,8 +539,6 @@ function openStripeCheckoutOverlay(url, product) {
   const productPrice = (product && product.price) ? product.price : null;
   const productImage = (product && Array.isArray(product.images) && product.images[0]) ? product.images[0] : null;
   const productDesc = (product && product.description) ? product.description : null;
-  const shipping = (product && typeof product.shippingBand === "string" && window._mrtStore) ? null : null;
-
   let overlay = document.getElementById("mrt-stripe-overlay");
 
   if (!overlay) {
@@ -552,7 +562,7 @@ function openStripeCheckoutOverlay(url, product) {
     const close = () => {
       overlay.hidden = true;
       overlay.setAttribute("aria-hidden", "true");
-      document.body.style.overflow = "";
+      unlockBodyScroll();
     };
 
     overlay.querySelector("#mrt-stripe-backdrop").addEventListener("click", close);
@@ -603,7 +613,7 @@ function openStripeCheckoutOverlay(url, product) {
 
   overlay.hidden = false;
   overlay.setAttribute("aria-hidden", "false");
-  document.body.style.overflow = "hidden";
+  lockBodyScroll();
 
   const closeBtn = overlay.querySelector("#mrt-stripe-close");
   if (closeBtn) {
@@ -978,7 +988,7 @@ function ensureUtilityPanel() {
               </div>
               <button class="account-panel__text-action" type="button" data-password-reset>Forgot password?</button>
             </form>
-            <p class="account-panel__feedback" data-account-feedback hidden></p>
+            <p class="account-panel__feedback" data-account-feedback aria-live="polite" hidden></p>
           </div>
 
           <div class="account-panel__dashboard" data-panel-section="orders" data-account-dashboard hidden>
@@ -1314,10 +1324,10 @@ function renderUtilityPanel() {
       cartNode.innerHTML = cartItems.map((item) => `
         <article class="account-panel__line-item">
           <div>
-            <strong>${item.name}</strong>
-            <p>Qty ${item.quantity} • ${formatMoney(item.price)}</p>
+            <strong>${escapeHTML(item.name)}</strong>
+            <p>Qty ${escapeHTML(String(item.quantity))} • ${formatMoney(item.price)}</p>
           </div>
-          <button type="button" class="btn btn-secondary" data-remove-cart-item="${item.id}">Remove</button>
+          <button type="button" class="btn btn-secondary" data-remove-cart-item="${escapeHTML(item.id)}">Remove</button>
         </article>
       `).join("");
     }
@@ -1334,9 +1344,9 @@ function renderUtilityPanel() {
     if (firstItem && firstItem.image) {
       previewNode.hidden = false;
       previewNode.innerHTML = `
-        <img class="checkout-window__preview-img" src="${firstItem.image}" alt="${firstItem.name || ""}" />
+        <img class="checkout-window__preview-img" src="${escapeHTML(firstItem.image)}" alt="${escapeHTML(firstItem.name || "")}" />
         <div class="checkout-window__preview-info">
-          <p class="checkout-window__preview-name">${firstItem.name || ""}</p>
+          <p class="checkout-window__preview-name">${escapeHTML(firstItem.name || "")}</p>
           <p class="checkout-window__preview-price">${formatMoney(firstItem.price)}</p>
         </div>
       `;
@@ -1413,8 +1423,8 @@ function renderUtilityPanel() {
         return `
           <article class="account-panel__line-item">
             <div>
-              <strong>${order.productName || "Order"}</strong>
-              <p>Order ${order.id || "-"}</p>
+              <strong>${escapeHTML(order.productName || "Order")}</strong>
+              <p>Order ${escapeHTML(order.id || "-")}</p>
               <p>
                 <span class="order-status-pill" data-tone="${getOrderStatusMeta(order.status).tone}">${getOrderStatusMeta(order.status).label}</span>
                 ${new Date(order.createdAt).toLocaleDateString()} • ${formatMoney(order.total)}
@@ -1454,7 +1464,7 @@ function showUtilityPanel(mode) {
   panel.hidden = false;
   panel.setAttribute("aria-hidden", "false");
   panel.setAttribute("data-open-mode", mode || "account");
-  document.body.style.overflow = "hidden";
+  lockBodyScroll();
   renderUtilityPanel();
   focusUtilityPanelSection(mode);
 }
@@ -1466,7 +1476,7 @@ function hideUtilityPanel() {
   }
   panel.hidden = true;
   panel.setAttribute("aria-hidden", "true");
-  document.body.style.overflow = "";
+  unlockBodyScroll();
 }
 
 function handleCheckoutSuccessMessage() {

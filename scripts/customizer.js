@@ -1,5 +1,5 @@
 import { STORE, WOOD_TYPES, formatCurrency } from "./products.js";
-import { initHeaderUtilities, setYear, toggleMobileMenu } from "./common.js";
+import { initHeaderUtilities, setYear, toggleMobileMenu, lockBodyScroll, unlockBodyScroll } from "./common.js";
 
 const EMBED_COSTS = {
   embed_figurines: 95,
@@ -238,7 +238,7 @@ function showOverlay() {
   if (!requestOverlay) return;
   requestOverlay.hidden = false;
   requestOverlay.setAttribute("aria-hidden", "false");
-  document.body.style.overflow = "hidden";
+  lockBodyScroll();
   if (overlayStepChoice) overlayStepChoice.hidden = false;
   if (overlayStepRequest) overlayStepRequest.hidden = true;
 }
@@ -247,7 +247,7 @@ function hideOverlay() {
   if (!requestOverlay) return;
   requestOverlay.hidden = true;
   requestOverlay.setAttribute("aria-hidden", "true");
-  document.body.style.overflow = "";
+  unlockBodyScroll();
 }
 
 function init() {

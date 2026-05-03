@@ -13,7 +13,7 @@
   <meta property="og:type" content="product" />
   <meta property="og:title" content="Product | Mom's Resin Tables" />
   <meta property="og:description" content="Handcrafted one-of-one resin tabletop design with custom builder options." />
-  <meta property="og:image" content="assets/images/picwish_8813969001_image1.jpg" />
+  <meta property="og:image" content="https://momsresintables.com/assets/images/picwish_8813969001_image1.jpg" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=Sora:wght@400;500;600;700&display=swap" rel="stylesheet" />
@@ -82,7 +82,14 @@
             <li><strong>Care:</strong> <span data-product-care></span></li>
           </ul>
           <div class="hero-actions" style="margin-top: 1rem;">
-            <a class="btn btn-primary" data-buy-link href="#">Proceed to Checkout</a>
+            <div class="card-qty-row" data-buy-qty-row>
+              <div class="qty-selector">
+                <button class="qty-btn qty-dec" type="button" aria-label="Decrease quantity">&#8722;</button>
+                <input class="qty-input" type="number" value="1" min="1" max="10" aria-label="Quantity" />
+                <button class="qty-btn qty-inc" type="button" aria-label="Increase quantity">&#43;</button>
+              </div>
+              <a class="btn btn-primary" data-buy-link href="#">Proceed to Checkout</a>
+            </div>
             <a class="btn btn-secondary" href="custom.html">Build a Custom Top</a>
             <a class="btn btn-secondary" href="contact.html">Ask a Question</a>
           </div>

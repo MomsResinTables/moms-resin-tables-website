@@ -131,12 +131,28 @@ function renderDetails(product) {
       buy.href = "#";
       buy.textContent = hasStripeCheckout ? "Proceed to Checkout" : "Add to Cart";
       buy.removeAttribute("aria-disabled");
+
+      const qtyDec = document.querySelector("[data-buy-qty-row] .qty-dec");
+      const qtyInc = document.querySelector("[data-buy-qty-row] .qty-inc");
+      const qtyInput = document.querySelector("[data-buy-qty-row] .qty-input");
+      if (qtyDec && qtyInc && qtyInput) {
+        qtyDec.addEventListener("click", () => {
+          const v = parseInt(qtyInput.value, 10) || 1;
+          if (v > 1) { qtyInput.value = v - 1; }
+        });
+        qtyInc.addEventListener("click", () => {
+          const v = parseInt(qtyInput.value, 10) || 1;
+          if (v < 10) { qtyInput.value = v + 1; }
+        });
+      }
+
       buy.addEventListener("click", (event) => {
         event.preventDefault();
+        const qty = Math.min(10, Math.max(1, parseInt(qtyInput ? qtyInput.value : "1", 10) || 1));
 
         if (hasStripeCheckout) {
           startProductCheckout(product, {
-            quantity: 1,
+            quantity: qty,
             addToCart: true,
             eventNote: "Customer started checkout from product page popup."
           });
@@ -148,12 +164,14 @@ function renderDetails(product) {
           name: product.name,
           price: product.price,
           image: product.images[0]
-        }, 1);
+        }, qty);
       });
     } else {
       buy.href = "contact.html";
       buy.textContent = "This Piece Is Sold";
       buy.setAttribute("aria-disabled", "true");
+      const qtyRow = document.querySelector("[data-buy-qty-row]");
+      if (qtyRow) { qtyRow.hidden = true; }
     }
   }
 }

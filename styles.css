@@ -26,6 +26,10 @@ body {
   padding: 0;
 }
 
+.scroll-locked {
+  overflow: hidden;
+}
+
 body {
   font-family: "Sora", "Segoe UI", sans-serif;
   color: var(--text);
