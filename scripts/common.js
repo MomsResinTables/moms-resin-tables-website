@@ -449,6 +449,21 @@ function injectGlobalSeo() {
     "@context": "https://schema.org",
     "@graph": schemaGraph
   });
+
+  // GA4 view_item — fires once per product page load
+  if (product) {
+    ga4Event("view_item", {
+      currency: "USD",
+      value: Number(product.price) || 0,
+      items: [{
+        item_id: product.id,
+        item_name: product.name,
+        price: Number(product.price) || 0,
+        quantity: 1,
+        item_category: "Resin Tables"
+      }]
+    });
+  }
 }
 
 const CART_KEY = "mrt_cart";
@@ -924,6 +939,13 @@ function isStripeCheckoutLink(value) {
   return typeof value === "string" && value.startsWith("https://buy.stripe.com/");
 }
 
+// ── GA4 ecommerce event helper ─────────────────────────────────────────────
+function ga4Event(eventName, params) {
+  if (typeof gtag === "function") {
+    gtag("event", eventName, params);
+  }
+}
+
 function createOrderId(productId = "item") {
   const stamp = Date.now();
   const rand = Math.floor(Math.random() * 100000).toString().padStart(5, "0");
@@ -1016,6 +1038,18 @@ function openStripeCheckoutOverlay(url, product) {
   if (closeBtn) {
     closeBtn.focus();
   }
+
+  ga4Event("begin_checkout", {
+    currency: "USD",
+    value: productPrice ? Number(productPrice) : undefined,
+    items: [{
+      item_id: (product && product.id) ? product.id : "unknown",
+      item_name: productName || "Resin Table",
+      price: productPrice ? Number(productPrice) : undefined,
+      quantity: 1,
+      item_category: "Resin Tables"
+    }]
+  });
 }
 
 export function startProductCheckout(product, options = {}) {
@@ -1175,6 +1209,18 @@ export function addToCart(product, quantity = 1) {
   }
 
   saveCartItems(items);
+
+  ga4Event("add_to_cart", {
+    currency: "USD",
+    value: (Number(product.price) || 0) * qty,
+    items: [{
+      item_id: product.id,
+      item_name: product.name || product.id,
+      price: Number(product.price) || 0,
+      quantity: qty,
+      item_category: "Resin Tables"
+    }]
+  });
 }
 
 function removeCartItem(id) {
@@ -1888,6 +1934,25 @@ function handleCheckoutSuccessMessage() {
     const nextUrl = `${window.location.pathname}${nextQuery ? `?${nextQuery}` : ""}${window.location.hash || ""}`;
     window.history.replaceState({}, "", nextUrl);
 
+    // GA4 purchase event — fires once per successful Stripe return
+    try {
+      const recentOrder = (() => {
+        try { return JSON.parse(localStorage.getItem("mrt_orders") || "[]").slice(-1)[0]; } catch { return null; }
+      })();
+      ga4Event("purchase", {
+        transaction_id: (recentOrder && recentOrder.id) ? recentOrder.id : `mrt-${Date.now()}`,
+        currency: "USD",
+        value: (recentOrder && recentOrder.total) ? Number(recentOrder.total) : 0,
+        items: recentOrder ? [{
+          item_id: recentOrder.productId || "unknown",
+          item_name: recentOrder.productName || "Resin Table",
+          price: Number(recentOrder.total) || 0,
+          quantity: 1,
+          item_category: "Resin Tables"
+        }] : []
+      });
+    } catch (_e) { /* non-blocking */ }
+
     const overlay = document.createElement("div");
     overlay.className = "purchase-success-overlay";
     overlay.setAttribute("role", "dialog");
@@ -2126,27 +2191,5 @@ export function initHeaderUtilities() {
       syncMobileMenuState();
     });
     window.__mrtHeaderStateListener = true;
-
-  // ── Analytics & Clarity Tracking ──────────────────────────────────────────
-  (function injectTracking() {
-    const head = document.head || document.getElementsByTagName("head")[0];
-
-    // Google Analytics 4 (G-H3JYBTM98L)
-    const ga4Script = document.createElement("script");
-    ga4Script.async = true;
-    ga4Script.src = "https://www.googletagmanager.com/gtag/js?id=G-H3JYBTM98L";
-    head.appendChild(ga4Script);
-
-    const ga4Init = document.createElement("script");
-    ga4Init.textContent =
-      "window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-H3JYBTM98L');";
-    head.appendChild(ga4Init);
-
-    // Microsoft Clarity (wleys7cfci)
-    const clarityScript = document.createElement("script");
-    clarityScript.textContent =
-      "(function(c,l,a,r,i,t,y){c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};t=l.createElement(r);t.async=1;t.src='https://www.clarity.ms/tag/'+i;y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);})(window,document,'clarity','script','wleys7cfci');";
-    head.appendChild(clarityScript);
-  })();
   }
 }
