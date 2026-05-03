@@ -367,10 +367,12 @@ function injectGlobalSeo() {
       url: `${SITE_ORIGIN}/`,
       image: image,
       email: STORE.supportEmail,
+      telephone: "+18137735553",
       address: {
         "@type": "PostalAddress",
         addressLocality: "Safety Harbor",
         addressRegion: "FL",
+        postalCode: "34695",
         addressCountry: "US"
       },
       areaServed: "US",
