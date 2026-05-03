@@ -1604,7 +1604,7 @@ textarea {
 .account-panel__card {
   position: relative;
   z-index: 1;
-  width: min(860px, 100%);
+  width: min(680px, 100%);
   max-height: 90vh;
   overflow: auto;
   background: #fffaf3;
@@ -1616,16 +1616,20 @@ textarea {
 
 .account-panel__grid {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: 1fr;
   gap: 1rem;
 }
 
-.account-panel--auth-only .account-panel__card {
+.account-panel--signin .account-panel__card {
   width: min(560px, 100%);
 }
 
-.account-panel--auth-only .account-panel__grid {
-  grid-template-columns: 1fr;
+.account-panel--cart .account-panel__card {
+  width: min(760px, 100%);
+}
+
+.account-panel--dashboard .account-panel__card {
+  width: min(760px, 100%);
 }
 
 .account-panel__method-stack {
@@ -1781,6 +1785,13 @@ textarea {
   display: flex;
   gap: 0.55rem;
   margin-bottom: 0.6rem;
+}
+
+.account-panel__dashboard {
+  border: 1px solid #e0ccba;
+  border-radius: 12px;
+  padding: 0.75rem;
+  background: #fffdf8;
 }
 
 .account-panel__policy-note {

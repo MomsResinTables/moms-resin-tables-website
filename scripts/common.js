@@ -1004,6 +1004,7 @@ function renderUtilityPanel() {
   const cartItems = getCartItems();
   const titleNode = panel.querySelector("[data-account-panel-title]");
   const cartSection = panel.querySelector("[data-cart-panel-section]");
+  const accountSection = panel.querySelector('[data-panel-section="account"]');
   const cartHeading = panel.querySelector("[data-cart-panel-heading]");
   const accountHeading = panel.querySelector("[data-account-panel-heading]");
 
@@ -1020,17 +1021,24 @@ function renderUtilityPanel() {
   const feedbackNode = panel.querySelector("[data-account-feedback]");
   const checkoutLink = panel.querySelector("[data-cart-checkout]");
   const firebaseReady = hasFirebaseAuthConfig();
-  const authOnly = mode === "account" && !account;
-  const dashboardMode = mode === "orders" && Boolean(account);
+  const cartMode = mode === "cart";
+  const signInMode = mode === "account" && !account;
+  const dashboardMode = (mode === "orders") || (mode === "account" && Boolean(account));
 
-  panel.classList.toggle("account-panel--auth-only", authOnly || dashboardMode);
+  panel.classList.toggle("account-panel--cart", cartMode);
+  panel.classList.toggle("account-panel--signin", signInMode);
+  panel.classList.toggle("account-panel--dashboard", dashboardMode);
 
   if (cartSection) {
-    cartSection.hidden = authOnly || dashboardMode;
+    cartSection.hidden = !cartMode;
+  }
+
+  if (accountSection) {
+    accountSection.hidden = cartMode;
   }
 
   if (titleNode) {
-    titleNode.textContent = authOnly ? "Sign In" : (dashboardMode ? "Order Dashboard" : "Account and Cart");
+    titleNode.textContent = cartMode ? "Your Cart" : (signInMode ? "Sign In" : "Order Dashboard");
   }
 
   if (cartHeading) {
@@ -1038,15 +1046,15 @@ function renderUtilityPanel() {
   }
 
   if (accountHeading) {
-    accountHeading.textContent = authOnly ? "Sign In" : (dashboardMode ? "Dashboard" : "Account");
+    accountHeading.textContent = signInMode ? "Sign In" : "Order Dashboard";
   }
 
   if (authShell) {
-    authShell.hidden = Boolean(account);
+    authShell.hidden = !signInMode;
   }
 
   if (dashboardShell) {
-    dashboardShell.hidden = !account;
+    dashboardShell.hidden = !(dashboardMode && account);
   }
 
   if (authNote) {
