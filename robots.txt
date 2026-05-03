@@ -2,3 +2,9 @@ User-agent: *
 Allow: /
 
 Sitemap: https://momsresintables.com/sitemap.xml
+
+# Product feed (Google Merchant Center / Bing Shopping)
+# https://momsresintables.com/feed.xml
+
+# IndexNow key
+# https://momsresintables.com/e2f7a3c1b4d8f0e5a9c2b6d1f4e8a3c7.txt

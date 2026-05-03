@@ -1,0 +1,38 @@
+{
+  "name": "Mom's Resin Tables",
+  "short_name": "Mom's Tables",
+  "description": "Handcrafted resin tables, river tables, and live edge tabletop builds made in Safety Harbor, Florida. Shop one-of-one pieces or start a custom commission.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "background_color": "#f4f0e9",
+  "theme_color": "#0f6b6f",
+  "lang": "en-US",
+  "dir": "ltr",
+  "categories": ["shopping"],
+  "icons": [
+    {
+      "src": "assets/icons/logo-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "assets/icons/logo-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "screenshots": [
+    {
+      "src": "assets/images/picwish_8813969001_image1.jpg",
+      "sizes": "1200x900",
+      "type": "image/jpeg",
+      "label": "Mom's Resin Tables homepage"
+    }
+  ],
+  "related_applications": [],
+  "prefer_related_applications": false
+}
