@@ -1476,14 +1476,46 @@ function handleCheckoutSuccessMessage() {
       return;
     }
 
-    window.alert("Thank you for your purchase!");
-
     params.delete("checkout");
     const nextQuery = params.toString();
     const nextUrl = `${window.location.pathname}${nextQuery ? `?${nextQuery}` : ""}${window.location.hash || ""}`;
     window.history.replaceState({}, "", nextUrl);
+
+    const overlay = document.createElement("div");
+    overlay.className = "purchase-success-overlay";
+    overlay.setAttribute("role", "dialog");
+    overlay.setAttribute("aria-modal", "true");
+    overlay.setAttribute("aria-label", "Order confirmed");
+    overlay.innerHTML = `
+      <div class="purchase-success-modal">
+        <button class="purchase-success-close" aria-label="Close">&times;</button>
+        <div class="purchase-success-icon">
+          <svg viewBox="0 0 52 52" aria-hidden="true" focusable="false">
+            <circle cx="26" cy="26" r="25" fill="none" />
+            <path fill="none" stroke-linecap="round" stroke-linejoin="round" d="M14 27l8 8 16-16" />
+          </svg>
+        </div>
+        <h2 class="purchase-success-title">Thank You!</h2>
+        <p class="purchase-success-msg">Your order has been received. We&#8217;ll be in touch shortly with shipping details.</p>
+        <div class="purchase-success-timer" aria-hidden="true"><span class="purchase-success-timer-bar"></span></div>
+      </div>
+    `;
+
+    document.body.appendChild(overlay);
+    requestAnimationFrame(() => overlay.classList.add("purchase-success-overlay--visible"));
+
+    let closeTimer;
+    function closePurchaseModal() {
+      clearTimeout(closeTimer);
+      overlay.classList.remove("purchase-success-overlay--visible");
+      overlay.addEventListener("transitionend", () => overlay.remove(), { once: true });
+    }
+
+    overlay.querySelector(".purchase-success-close").addEventListener("click", closePurchaseModal);
+    overlay.addEventListener("click", (e) => { if (e.target === overlay) closePurchaseModal(); });
+    closeTimer = setTimeout(closePurchaseModal, 3000);
   } catch (_error) {
-    // Avoid blocking checkout return if URL parsing fails.
+    // Avoid blocking checkout return if rendering fails.
   }
 }
 
