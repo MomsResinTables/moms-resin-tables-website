@@ -2126,5 +2126,27 @@ export function initHeaderUtilities() {
       syncMobileMenuState();
     });
     window.__mrtHeaderStateListener = true;
+
+  // ── Analytics & Clarity Tracking ──────────────────────────────────────────
+  (function injectTracking() {
+    const head = document.head || document.getElementsByTagName("head")[0];
+
+    // Google Analytics 4 (G-H3JYBTM98L)
+    const ga4Script = document.createElement("script");
+    ga4Script.async = true;
+    ga4Script.src = "https://www.googletagmanager.com/gtag/js?id=G-H3JYBTM98L";
+    head.appendChild(ga4Script);
+
+    const ga4Init = document.createElement("script");
+    ga4Init.textContent =
+      "window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-H3JYBTM98L');";
+    head.appendChild(ga4Init);
+
+    // Microsoft Clarity (wleys7cfci)
+    const clarityScript = document.createElement("script");
+    clarityScript.textContent =
+      "(function(c,l,a,r,i,t,y){c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};t=l.createElement(r);t.async=1;t.src='https://www.clarity.ms/tag/'+i;y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);})(window,document,'clarity','script','wleys7cfci');";
+    head.appendChild(clarityScript);
+  })();
   }
 }
