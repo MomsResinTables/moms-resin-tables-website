@@ -1,5 +1,5 @@
 import { STORE, formatCurrency, getProductById, getShippingRate, isProductAvailable } from "./products.js";
-import { addToCart, initHeaderUtilities, setYear, toggleMobileMenu } from "./common.js";
+import { addToCart, initHeaderUtilities, setYear, startProductCheckout, toggleMobileMenu } from "./common.js";
 
 function hasStripeCheckoutLink(value) {
   return typeof value === "string" && value.startsWith("https://buy.stripe.com/");
@@ -128,13 +128,21 @@ function renderDetails(product) {
   if (buy) {
     if (isProductAvailable(product)) {
       const hasStripeCheckout = hasStripeCheckoutLink(product.paymentLink);
-      buy.href = hasStripeCheckout ? `checkout.html?id=${product.id}` : "#";
+      buy.href = "#";
       buy.textContent = hasStripeCheckout ? "Proceed to Checkout" : "Add to Cart";
       buy.removeAttribute("aria-disabled");
       buy.addEventListener("click", (event) => {
-        if (!hasStripeCheckout) {
-          event.preventDefault();
+        event.preventDefault();
+
+        if (hasStripeCheckout) {
+          startProductCheckout(product, {
+            quantity: 1,
+            addToCart: true,
+            eventNote: "Customer started checkout from product page popup."
+          });
+          return;
         }
+
         addToCart({
           id: product.id,
           name: product.name,

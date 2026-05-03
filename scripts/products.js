@@ -6,10 +6,10 @@ export const STORE = {
   supportPhone: "(813) 555-0198",
   shipFrom: "Safety Harbor, Florida",
   shippingBands: {
-    decor: { label: "Decor", rate: 29 },
-    side: { label: "Side Table", rate: 79 },
-    medium: { label: "Coffee / Accent", rate: 109 },
-    large: { label: "Console / Bench", rate: 149 }
+    decor: { label: "Decor", rate: 18 },
+    side: { label: "Side Table", rate: 34 },
+    medium: { label: "Coffee / Accent", rate: 52 },
+    large: { label: "Console / Bench", rate: 74 }
   }
 };
 
@@ -45,7 +45,7 @@ export const PRODUCTS = [
     finish: "Hand-sanded, high-build polyurethane top coat",
     scopeNote: "Top only. Any base shown in photos is for presentation and is not included.",
     availability: "One of one",
-    paymentLink: "REPLACE_WITH_STRIPE_LINK_MRT_001",
+    paymentLink: "https://buy.stripe.com/test_4gM7sLbZ1f7pgev5YegQE0c",
     description:
       "A compact top design with a layered shoreline effect in teal and earth tones.",
     care: "Clean with a microfiber cloth. Use coasters for heat and condensation.",
@@ -70,7 +70,7 @@ export const PRODUCTS = [
     finish: "Flood-coat resin seal with UV-resistant polyurethane",
     scopeNote: "Top only. Any base shown in photos is for presentation and is not included.",
     availability: "One of one",
-    paymentLink: "REPLACE_WITH_STRIPE_LINK_MRT_002",
+    paymentLink: "https://buy.stripe.com/test_9B6bJ19QTbVd5zRcmCgQE0d",
     description:
       "A longer geometric striping layout with rich contrast and deep gloss finish.",
     care: "Avoid direct prolonged sun exposure to preserve tone consistency.",
@@ -92,7 +92,7 @@ export const PRODUCTS = [
     finish: "Glass-like resin flood coat",
     scopeNote: "Top only. Any base shown in photos is for presentation and is not included.",
     availability: "One of one",
-    paymentLink: "REPLACE_WITH_STRIPE_LINK_MRT_003",
+    paymentLink: "https://buy.stripe.com/test_4gM3cv9QTaR96DVeuKgQE0e",
     description:
       "A warm chevron composition with clean color transitions and reflective depth. Works beautifully in bright, modern interiors.",
     care: "Use felt pads if placing on delicate tile or hardwood flooring.",
@@ -114,7 +114,7 @@ export const PRODUCTS = [
     finish: "High-gloss resin and polyurethane blend",
     scopeNote: "Top only. Any base shown in photos is for presentation and is not included.",
     availability: "One of one",
-    paymentLink: "REPLACE_WITH_STRIPE_LINK_MRT_004",
+    paymentLink: "https://buy.stripe.com/test_6oUcN50gj0cve6ndqGgQE0f",
     description:
       "A two-tier side table featuring a flowing resin river and visible edge character from the original slab.",
     care: "Do not place near radiators or direct heat sources.",
@@ -136,7 +136,7 @@ export const PRODUCTS = [
     finish: "Resin flood coat with hand-buffed shine",
     scopeNote: "Top only. Any base shown in photos is for presentation and is not included.",
     availability: "One of one",
-    paymentLink: "REPLACE_WITH_STRIPE_LINK_MRT_005",
+    paymentLink: "https://buy.stripe.com/test_8x23cv4wz7EXe6n0DUgQE0g",
     description:
       "A low-profile accent piece with alternating wood species and subtle tonal shifts. Great for lounge corners and studio spaces.",
     care: "Wipe spills promptly and avoid abrasive cleaners.",
@@ -158,7 +158,7 @@ export const PRODUCTS = [
     finish: "Resin-protected top with durable satin edges",
     scopeNote: "Top only. Any base shown in photos is for presentation and is not included.",
     availability: "One of one",
-    paymentLink: "REPLACE_WITH_STRIPE_LINK_MRT_006",
+    paymentLink: "https://buy.stripe.com/test_eVq5kDe796ATe6ngCSgQE0h",
     description:
       "An elongated bench silhouette with strong visual rhythm in green and gold tones, suitable as a coffee bench or entry feature.",
     care: "Indoor use recommended for longest finish life.",
@@ -180,7 +180,7 @@ export const PRODUCTS = [
     finish: "Deep high-gloss resin top",
     scopeNote: "Top only. Any base shown in photos is for presentation and is not included.",
     availability: "One of one",
-    paymentLink: "REPLACE_WITH_STRIPE_LINK_MRT_007",
+    paymentLink: "https://buy.stripe.com/test_5kQ3cv0gj3oH7HZ2M2gQE0i",
     description:
       "A bold diagonal composition with premium contrast and mirror finish, crafted for design-forward interiors.",
     care: "Use coasters and avoid dragging metal objects across the top.",
@@ -205,7 +205,7 @@ export const PRODUCTS = [
     finish: "Gloss resin with sealed edge detailing",
     scopeNote: "Top only. Any base shown in photos is for presentation and is not included.",
     availability: "One of one",
-    paymentLink: "REPLACE_WITH_STRIPE_LINK_MRT_008",
+    paymentLink: "https://buy.stripe.com/test_aFa4gz9QTe3lfarbiygQE0j",
     description:
       "A decorative iron-frame coffee table with floral scrollwork and a warm, highly reflective striped top.",
     care: "Use a damp cloth only; avoid bleach and ammonia cleaners.",
@@ -230,7 +230,7 @@ export const PRODUCTS = [
     finish: "Resin + polyurethane protective top coat",
     scopeNote: "Top only. Any base shown in photos is for presentation and is not included.",
     availability: "One of one",
-    paymentLink: "REPLACE_WITH_STRIPE_LINK_MRT_009",
+    paymentLink: "https://buy.stripe.com/test_6oUbJ14wz6AT3rJ86mgQE0k",
     description:
       "A natural slab bench with an organic aqua inlay that highlights grain movement and edge texture.",
     care: "Keep indoors and out of direct weather exposure.",
@@ -252,7 +252,7 @@ export const PRODUCTS = [
     finish: "Gloss hand-finished seal",
     scopeNote: "Decor set only. No hardware or mounting accessories included.",
     availability: "One of one set",
-    paymentLink: "REPLACE_WITH_STRIPE_LINK_MRT_010",
+    paymentLink: "https://buy.stripe.com/test_5kQ14n3sv5wP7HZ5YegQE0l",
     description:
       "A collectible trio of artisan resin-wood panels for shelf styling, desk display, or wall-adjacent accent.",
     care: "Dust with a soft dry cloth. Avoid prolonged direct sunlight.",
@@ -274,7 +274,7 @@ export const PRODUCTS = [
     finish: "High-build clear coat with resin reinforcement",
     scopeNote: "Top only. Any base shown in photos is for presentation and is not included.",
     availability: "One of one",
-    paymentLink: "REPLACE_WITH_STRIPE_LINK_MRT_011",
+    paymentLink: "https://buy.stripe.com/test_eVq9AT3sv9N54vNgCSgQE0m",
     description:
       "A dramatic silhouette with sculptural side profile and warm cedar tones under a glassy top layer.",
     care: "Use a soft cloth and pH-neutral cleaner when needed.",
@@ -296,7 +296,7 @@ export const PRODUCTS = [
     finish: "Mirror resin coat, hand-smoothed edges",
     scopeNote: "Top only. Any base shown in photos is for presentation and is not included.",
     availability: "One of one",
-    paymentLink: "REPLACE_WITH_STRIPE_LINK_MRT_012",
+    paymentLink: "https://buy.stripe.com/test_14A00j1kncZh2nFcmCgQE0n",
     description:
       "A long-form live edge bench with a vibrant teal channel, built to stand out in entryways and studio lofts.",
     care: "Keep dry and avoid prolonged standing water on the surface.",

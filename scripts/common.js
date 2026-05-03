@@ -1,3 +1,5 @@
+import { getProductById, getShippingRate } from "./products.js";
+
 export function setYear() {
   const yearNodes = document.querySelectorAll("[data-year]");
   const year = String(new Date().getFullYear());
@@ -509,6 +511,139 @@ function formatMoney(value) {
   }).format(Number(value) || 0);
 }
 
+function isStripeCheckoutLink(value) {
+  return typeof value === "string" && value.startsWith("https://buy.stripe.com/");
+}
+
+function createOrderId(productId = "item") {
+  const stamp = Date.now();
+  const rand = Math.floor(Math.random() * 100000).toString().padStart(5, "0");
+  const slug = String(productId || "item").replace(/[^a-z0-9]+/gi, "").toLowerCase().slice(0, 10) || "item";
+  return `mrt-${slug}-${stamp}-${rand}`;
+}
+
+function openStripeCheckoutOverlay(url, product) {
+  const productName = (product && product.name) ? product.name : (typeof product === "string" ? product : "");
+  const productPrice = (product && product.price) ? product.price : null;
+  const productImage = (product && Array.isArray(product.images) && product.images[0]) ? product.images[0] : null;
+  const productDesc = (product && product.description) ? product.description : null;
+  const shipping = (product && typeof product.shippingBand === "string" && window._mrtStore) ? null : null;
+
+  let overlay = document.getElementById("mrt-stripe-overlay");
+
+  if (!overlay) {
+    overlay = document.createElement("div");
+    overlay.id = "mrt-stripe-overlay";
+    overlay.setAttribute("role", "dialog");
+    overlay.setAttribute("aria-modal", "true");
+    overlay.setAttribute("aria-label", "Secure Checkout");
+    overlay.innerHTML = `
+      <div class="stripe-overlay__backdrop" id="mrt-stripe-backdrop"></div>
+      <div class="stripe-overlay__card">
+        <div class="stripe-overlay__header">
+          <span class="stripe-overlay__title" id="mrt-stripe-overlay-title">Secure Checkout</span>
+          <button class="stripe-overlay__close" id="mrt-stripe-close" type="button" aria-label="Close checkout">&times;</button>
+        </div>
+        <div class="stripe-overlay__body" id="mrt-stripe-body"></div>
+      </div>
+    `;
+    document.body.appendChild(overlay);
+
+    const close = () => {
+      overlay.hidden = true;
+      overlay.setAttribute("aria-hidden", "true");
+      document.body.style.overflow = "";
+    };
+
+    overlay.querySelector("#mrt-stripe-backdrop").addEventListener("click", close);
+    overlay.querySelector("#mrt-stripe-close").addEventListener("click", close);
+
+    document.addEventListener("keydown", (event) => {
+      if (event.key === "Escape" && !overlay.hidden) {
+        close();
+      }
+    });
+  }
+
+  const title = overlay.querySelector("#mrt-stripe-overlay-title");
+  const body = overlay.querySelector("#mrt-stripe-body");
+
+  if (title) {
+    title.textContent = productName ? `Checkout — ${productName}` : "Secure Checkout";
+  }
+
+  if (body) {
+    const priceHtml = productPrice
+      ? `<p class="stripe-overlay__price">${formatMoney(productPrice)}</p>`
+      : "";
+    const imgHtml = productImage
+      ? `<img class="stripe-overlay__img" src="${productImage}" alt="${productName}" />`
+      : "";
+    const descHtml = productDesc
+      ? `<p class="stripe-overlay__desc">${productDesc}</p>`
+      : "";
+
+    body.innerHTML = `
+      ${imgHtml}
+      <div class="stripe-overlay__info">
+        <p class="stripe-overlay__item-name">${productName}</p>
+        ${priceHtml}
+        ${descHtml}
+        <p class="stripe-overlay__trust">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+          Powered by Stripe &mdash; secure, encrypted payment
+        </p>
+        <a class="btn btn-primary stripe-overlay__cta" href="${url}" target="_blank" rel="noopener">
+          Continue to Secure Payment &rarr;
+        </a>
+        <p class="stripe-overlay__note">Opens Stripe in a new tab. Your cart stays open here.</p>
+      </div>
+    `;
+  }
+
+  overlay.hidden = false;
+  overlay.setAttribute("aria-hidden", "false");
+  document.body.style.overflow = "hidden";
+
+  const closeBtn = overlay.querySelector("#mrt-stripe-close");
+  if (closeBtn) {
+    closeBtn.focus();
+  }
+}
+
+export function startProductCheckout(product, options = {}) {
+  if (!product || !product.id || !isStripeCheckoutLink(product.paymentLink)) {
+    return false;
+  }
+
+  const quantity = Math.max(1, Number(options.quantity) || 1);
+  const shouldAddToCart = options.addToCart === true;
+
+  if (shouldAddToCart) {
+    addToCart({
+      id: product.id,
+      name: product.name,
+      price: product.price,
+      image: Array.isArray(product.images) ? (product.images[0] || "") : ""
+    }, quantity);
+  }
+
+  const orderId = createOrderId(product.id);
+  recordOrder({
+    id: orderId,
+    productId: product.id,
+    productName: product.name || product.id,
+    total: (Number(product.price) || 0) * quantity,
+    status: "checkout_started",
+    checkoutUrl: product.paymentLink,
+    eventNote: options.eventNote || "Customer started Stripe checkout popup."
+  });
+
+  openStripeCheckoutOverlay(product.paymentLink, product);
+
+  return true;
+}
+
 export function getCartItems() {
   const items = parseStoredJSON(CART_KEY, []);
   if (!Array.isArray(items)) {
@@ -776,13 +911,38 @@ function ensureUtilityPanel() {
       <h2 id="accountPanelTitle" data-account-panel-title>Account and Cart</h2>
       <div class="account-panel__grid">
         <section data-panel-section="cart" data-cart-panel-section>
-          <h3 data-cart-panel-heading>Your Cart</h3>
-          <div data-cart-items></div>
-          <p class="scope-note" data-cart-total></p>
-          <div class="hero-actions">
-            <a class="btn btn-primary" href="checkout.html" data-cart-checkout>Checkout</a>
-            <a class="btn btn-secondary" href="index.html#products">Continue Shopping</a>
-            <button class="btn btn-secondary" type="button" data-clear-cart>Clear Cart</button>
+          <div class="checkout-window__header">
+            <svg class="checkout-window__lock" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+            <h3 data-cart-panel-heading>Checkout</h3>
+          </div>
+          <div class="checkout-window__preview" data-cart-product-preview hidden></div>
+          <div class="checkout-window__items" data-cart-items></div>
+          <div class="checkout-window__total-row" data-cart-total-row hidden>
+            <div class="checkout-window__total-line">
+              <span class="checkout-window__total-label">Subtotal</span>
+              <span class="checkout-window__line-amount" data-cart-subtotal></span>
+            </div>
+            <div class="checkout-window__total-line">
+              <span class="checkout-window__total-label">Shipping</span>
+              <span class="checkout-window__line-amount" data-cart-shipping></span>
+            </div>
+            <div class="checkout-window__total-line checkout-window__total-line--grand">
+              <span class="checkout-window__total-label">Order Total</span>
+              <span class="checkout-window__total-amount" data-cart-total></span>
+            </div>
+          </div>
+          <div class="checkout-window__cta-zone">
+            <a class="btn btn-primary checkout-window__pay-btn" href="#" data-cart-checkout rel="noopener noreferrer">
+              Proceed to Secure Payment
+            </a>
+            <p class="checkout-window__trust-line">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+              Powered by Stripe &mdash; secure &amp; encrypted
+            </p>
+          </div>
+          <div class="checkout-window__secondary-actions">
+            <a class="checkout-window__continue-link" href="index.html#products">&larr; Continue Shopping</a>
+            <button class="checkout-window__clear-btn" type="button" data-clear-cart>Clear Cart</button>
           </div>
         </section>
         <section data-panel-section="account">
@@ -901,6 +1061,48 @@ function ensureUtilityPanel() {
           renderUtilityPanel();
         }
       }
+    });
+  }
+
+  const cartCheckout = panel.querySelector("[data-cart-checkout]");
+  if (cartCheckout) {
+    cartCheckout.addEventListener("click", (event) => {
+      const target = event.currentTarget;
+      if (!(target instanceof HTMLElement)) {
+        return;
+      }
+
+      if (target.getAttribute("aria-disabled") === "true") {
+        event.preventDefault();
+        return;
+      }
+
+      const productId = target.getAttribute("data-checkout-product-id") || "";
+      const product = productId ? getProductById(productId) : null;
+      const cartItem = productId ? getCartItems().find((item) => item.id === productId) : null;
+
+      if (!product || !cartItem || !isStripeCheckoutLink(product.paymentLink)) {
+        event.preventDefault();
+        return;
+      }
+
+      // Record order before Stripe opens in new tab
+      const qty = Math.max(1, Number(cartItem.quantity) || 1);
+      const subtotal = (Number(product.price) || 0) * qty;
+      const shippingTotal = (Number(getShippingRate(product)) || 0) * qty;
+      const orderId = createOrderId(product.id);
+      recordOrder({
+        id: orderId,
+        productId: product.id,
+        productName: product.name || product.id,
+        subtotal,
+        shippingTotal,
+        total: subtotal + shippingTotal,
+        status: "checkout_started",
+        checkoutUrl: product.paymentLink,
+        eventNote: "Customer proceeded to Stripe checkout from cart checkout window."
+      });
+      // Link has target="_blank" — Stripe opens in new tab, panel stays open
     });
   }
 
@@ -1038,11 +1240,11 @@ function renderUtilityPanel() {
   }
 
   if (titleNode) {
-    titleNode.textContent = cartMode ? "Your Cart" : (signInMode ? "Sign In" : "Order Dashboard");
+    titleNode.textContent = cartMode ? "Checkout" : (signInMode ? "Sign In" : "Order Dashboard");
   }
 
   if (cartHeading) {
-    cartHeading.textContent = "Your Cart";
+    cartHeading.textContent = "Checkout";
   }
 
   if (accountHeading) {
@@ -1121,21 +1323,64 @@ function renderUtilityPanel() {
     }
   }
 
+  const totalRowNode = panel.querySelector("[data-cart-total-row]");
+  const subtotalNode = panel.querySelector("[data-cart-subtotal]");
+  const shippingNode = panel.querySelector("[data-cart-shipping]");
   const totalNode = panel.querySelector("[data-cart-total]");
+
+  const previewNode = panel.querySelector("[data-cart-product-preview]");
+  if (previewNode) {
+    const firstItem = cartItems[0] || null;
+    if (firstItem && firstItem.image) {
+      previewNode.hidden = false;
+      previewNode.innerHTML = `
+        <img class="checkout-window__preview-img" src="${firstItem.image}" alt="${firstItem.name || ""}" />
+        <div class="checkout-window__preview-info">
+          <p class="checkout-window__preview-name">${firstItem.name || ""}</p>
+          <p class="checkout-window__preview-price">${formatMoney(firstItem.price)}</p>
+        </div>
+      `;
+    } else {
+      previewNode.hidden = true;
+      previewNode.innerHTML = "";
+    }
+  }
+
+  const firstCartItem = cartItems[0] || null;
+  const targetProduct = firstCartItem && firstCartItem.id ? getProductById(firstCartItem.id) : null;
+  const checkoutQty = Math.max(1, Number(firstCartItem?.quantity) || 1);
+  const checkoutSubtotal = targetProduct ? ((Number(targetProduct.price) || 0) * checkoutQty) : 0;
+  const checkoutShipping = targetProduct ? ((Number(getShippingRate(targetProduct)) || 0) * checkoutQty) : 0;
+  const checkoutTotal = checkoutSubtotal + checkoutShipping;
+
+  if (totalRowNode) {
+    totalRowNode.hidden = !targetProduct;
+  }
+
+  if (subtotalNode) {
+    subtotalNode.textContent = targetProduct ? formatMoney(checkoutSubtotal) : "";
+  }
+
+  if (shippingNode) {
+    shippingNode.textContent = targetProduct ? formatMoney(checkoutShipping) : "";
+  }
+
   if (totalNode) {
-    const count = getCartCount();
-    const total = getCartTotal();
-    totalNode.textContent = count ? `${count} item(s) • Est. total ${formatMoney(total)}` : "";
+    totalNode.textContent = targetProduct ? formatMoney(checkoutTotal) : "";
   }
 
   if (checkoutLink) {
-    const firstCartItem = cartItems[0] || null;
-    if (!firstCartItem || !firstCartItem.id) {
+
+    if (!firstCartItem || !firstCartItem.id || !targetProduct || !isStripeCheckoutLink(targetProduct.paymentLink)) {
       checkoutLink.setAttribute("aria-disabled", "true");
-      checkoutLink.href = "checkout.html";
+      checkoutLink.href = "#";
+      checkoutLink.removeAttribute("data-checkout-product-id");
+      checkoutLink.removeAttribute("target");
     } else {
       checkoutLink.removeAttribute("aria-disabled");
-      checkoutLink.href = `checkout.html?id=${encodeURIComponent(firstCartItem.id)}`;
+      checkoutLink.href = targetProduct.paymentLink;
+      checkoutLink.setAttribute("data-checkout-product-id", targetProduct.id);
+      checkoutLink.setAttribute("target", "_blank");
     }
   }
 
@@ -1222,6 +1467,24 @@ function hideUtilityPanel() {
   panel.hidden = true;
   panel.setAttribute("aria-hidden", "true");
   document.body.style.overflow = "";
+}
+
+function handleCheckoutSuccessMessage() {
+  try {
+    const params = new URLSearchParams(window.location.search);
+    if (params.get("checkout") !== "success") {
+      return;
+    }
+
+    window.alert("Thank you for your purchase!");
+
+    params.delete("checkout");
+    const nextQuery = params.toString();
+    const nextUrl = `${window.location.pathname}${nextQuery ? `?${nextQuery}` : ""}${window.location.hash || ""}`;
+    window.history.replaceState({}, "", nextUrl);
+  } catch (_error) {
+    // Avoid blocking checkout return if URL parsing fails.
+  }
 }
 
 function getSocialIconLinksMarkup() {
@@ -1378,6 +1641,8 @@ function ensureFooterEnhancements() {
 }
 
 export function initHeaderUtilities() {
+  handleCheckoutSuccessMessage();
+
   const nodes = document.querySelectorAll("[data-header-tools]");
   if (!nodes.length) {
     return;

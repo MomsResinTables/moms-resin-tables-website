@@ -7,7 +7,7 @@ import {
   getShippingRate,
   isProductAvailable
 } from "./products.js";
-import { addToCart, initHeaderUtilities, setAnnouncement, setYear, toggleMobileMenu } from "./common.js";
+import { addToCart, initHeaderUtilities, setAnnouncement, setYear, startProductCheckout, toggleMobileMenu } from "./common.js";
 
 function productCardTemplate(product) {
   const shipping = getShippingRate(product);
@@ -35,7 +35,7 @@ function productCardTemplate(product) {
       <p class="shipping-note">Nationwide shipping from ${STORE.shipFrom}: from ${formatCurrency(shipping)}</p>
       <div class="card-actions">
         <a class="btn btn-secondary" href="product.html?id=${product.id}">View Details</a>
-        <a class="btn btn-primary" href="${hasStripeCheckout ? `checkout.html?id=${product.id}` : "#"}">${hasStripeCheckout ? "Buy Now" : "Add to Cart"}</a>
+        <a class="btn btn-primary" href="#">${hasStripeCheckout ? "Buy Now" : "Add to Cart"}</a>
       </div>
     </div>
   `;
@@ -43,9 +43,17 @@ function productCardTemplate(product) {
   const buyNow = card.querySelector(".btn-primary");
   if (buyNow) {
     buyNow.addEventListener("click", (event) => {
-      if (!hasStripeCheckout) {
-        event.preventDefault();
+      event.preventDefault();
+
+      if (hasStripeCheckout) {
+        startProductCheckout(product, {
+          quantity: 1,
+          addToCart: true,
+          eventNote: "Customer started checkout from product grid popup."
+        });
+        return;
       }
+
       addToCart({
         id: product.id,
         name: product.name,
