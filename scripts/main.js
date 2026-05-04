@@ -13,7 +13,7 @@ const SITE_ORIGIN = `https://${STORE.domain}`;
 
 function toAbsoluteUrl(value) {
   if (!value) {
-    return `${SITE_ORIGIN}/assets/images/picwish_8813969001_image1.jpg`;
+    return `${SITE_ORIGIN}/assets/images/picwish_8813969001_image1.webp`;
   }
   if (/^https?:\/\//i.test(value)) {
     return value;
@@ -175,7 +175,7 @@ function injectHomepageSchema() {
 
 function init() {
   toggleMobileMenu();
-  initHeaderUtilities();
+  initHeaderUtilities({ deferAuth: true });
   setYear();
   setAnnouncement("Tops only: bases in photos are display examples and are not included.");
   renderShopGrid();

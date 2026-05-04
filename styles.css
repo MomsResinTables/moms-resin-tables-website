@@ -129,6 +129,8 @@ img {
   align-items: center;
   gap: 0.55rem;
   margin-left: auto;
+  min-height: 2.2rem;
+  min-width: 9.5rem;
 }
 
 .header-account-shell {
@@ -458,10 +460,29 @@ img {
 
 .hero {
   position: relative;
+  overflow: hidden;
   padding: clamp(2.4rem, 6vw, 4.2rem) 0 2rem;
-  background:
-    linear-gradient(120deg, rgba(20, 14, 11, 0.54), rgba(16, 48, 53, 0.38)),
-    url("assets/images/momhero.png") top center / cover no-repeat;
+  background: #1d1814;
+}
+
+.hero::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(120deg, rgba(20, 14, 11, 0.54), rgba(16, 48, 53, 0.38));
+  z-index: 1;
+}
+
+.hero-media {
+  position: absolute;
+  inset: 0;
+}
+
+.hero-media img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: top center;
 }
 
 .hero-grid {
@@ -469,6 +490,8 @@ img {
   grid-template-columns: 1.05fr 0.95fr;
   gap: clamp(1rem, 2.8vw, 2.4rem);
   align-items: stretch;
+  position: relative;
+  z-index: 2;
 }
 
 .hero-main {
@@ -1167,7 +1190,7 @@ img {
 /* Hero background variant for inner pages */
 .page-hero.has-hero-img {
   position: relative;
-  background: url("assets/images/momhero.png") center top / cover no-repeat;
+  background: url("assets/images/momhero-optimized.webp") center top / cover no-repeat;
   padding: clamp(3.5rem, 8vw, 6rem) 0 clamp(2.5rem, 6vw, 4rem);
   margin-bottom: 0;
 }
@@ -2416,10 +2439,6 @@ textarea {
 
   .account-panel__grid {
     grid-template-columns: 1fr;
-  }
-
-  .hero {
-    background-position: top center;
   }
 
   .footer-grid--enhanced {

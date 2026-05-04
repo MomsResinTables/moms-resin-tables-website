@@ -50,8 +50,8 @@ export const PRODUCTS = [
       "A compact top design with a layered shoreline effect in teal and earth tones.",
     care: "Clean with a microfiber cloth. Use coasters for heat and condensation.",
     images: [
-      "assets/images/picwish_8813968191_image1.jpg",
-      "assets/images/picwish_8813968191_image2.jpg"
+      "assets/images/picwish_8813968191_image1.webp",
+      "assets/images/picwish_8813968191_image2.webp"
     ]
   },
   {
@@ -74,7 +74,7 @@ export const PRODUCTS = [
     description:
       "A longer geometric striping layout with rich contrast and deep gloss finish.",
     care: "Avoid direct prolonged sun exposure to preserve tone consistency.",
-    images: ["assets/images/picwish_8813968501_image1.jpg"]
+    images: ["assets/images/picwish_8813968501_image1.webp"]
   },
   {
     id: "chevron-lumen-top",
@@ -96,7 +96,7 @@ export const PRODUCTS = [
     description:
       "A warm chevron composition with clean color transitions and reflective depth. Works beautifully in bright, modern interiors.",
     care: "Use felt pads if placing on delicate tile or hardwood flooring.",
-    images: ["assets/images/picwish_8813968581_image2.jpg"]
+    images: ["assets/images/picwish_8813968581_image2.webp"]
   },
   {
     id: "riverline-top",
@@ -118,7 +118,7 @@ export const PRODUCTS = [
     description:
       "A two-tier side table featuring a flowing resin river and visible edge character from the original slab.",
     care: "Do not place near radiators or direct heat sources.",
-    images: ["assets/images/picwish_8813968621_image1.jpg"]
+    images: ["assets/images/picwish_8813968621_image1.webp"]
   },
   {
     id: "atelier-stripe-top",
@@ -140,7 +140,7 @@ export const PRODUCTS = [
     description:
       "A low-profile accent piece with alternating wood species and subtle tonal shifts. Great for lounge corners and studio spaces.",
     care: "Wipe spills promptly and avoid abrasive cleaners.",
-    images: ["assets/images/picwish_8813968661_image1.jpg"]
+    images: ["assets/images/picwish_8813968661_image1.webp"]
   },
   {
     id: "longline-mosaic-top",
@@ -162,7 +162,7 @@ export const PRODUCTS = [
     description:
       "An elongated bench silhouette with strong visual rhythm in green and gold tones, suitable as a coffee bench or entry feature.",
     care: "Indoor use recommended for longest finish life.",
-    images: ["assets/images/picwish_8813968741_image1.jpg"]
+    images: ["assets/images/picwish_8813968741_image1.webp"]
   },
   {
     id: "prism-chevron-top",
@@ -185,8 +185,8 @@ export const PRODUCTS = [
       "A bold diagonal composition with premium contrast and mirror finish, crafted for design-forward interiors.",
     care: "Use coasters and avoid dragging metal objects across the top.",
     images: [
-      "assets/images/picwish_8813968881_image1.jpg",
-      "assets/images/picwish_8813968881_image2.jpg"
+      "assets/images/picwish_8813968881_image1.webp",
+      "assets/images/picwish_8813968881_image2.webp"
     ]
   },
   {
@@ -210,8 +210,8 @@ export const PRODUCTS = [
       "A decorative iron-frame coffee table with floral scrollwork and a warm, highly reflective striped top.",
     care: "Use a damp cloth only; avoid bleach and ammonia cleaners.",
     images: [
-      "assets/images/picwish_8813969001_image1.jpg",
-      "assets/images/picwish_8813969001_image2.jpg"
+      "assets/images/picwish_8813969001_image1.webp",
+      "assets/images/picwish_8813969001_image2.webp"
     ]
   },
   {
@@ -234,7 +234,7 @@ export const PRODUCTS = [
     description:
       "A natural slab bench with an organic aqua inlay that highlights grain movement and edge texture.",
     care: "Keep indoors and out of direct weather exposure.",
-    images: ["assets/images/picwish_8813969051_image2.jpg"]
+    images: ["assets/images/picwish_8813969051_image2.webp"]
   },
   {
     id: "artisan-river-panel-set",
@@ -256,7 +256,7 @@ export const PRODUCTS = [
     description:
       "A collectible trio of artisan resin-wood panels for shelf styling, desk display, or wall-adjacent accent.",
     care: "Dust with a soft dry cloth. Avoid prolonged direct sunlight.",
-    images: ["assets/images/picwish_8813969231_image1.jpg"]
+    images: ["assets/images/picwish_8813969231_image1.webp"]
   },
   {
     id: "cedar-facet-top",
@@ -278,7 +278,7 @@ export const PRODUCTS = [
     description:
       "A dramatic silhouette with sculptural side profile and warm cedar tones under a glassy top layer.",
     care: "Use a soft cloth and pH-neutral cleaner when needed.",
-    images: ["assets/images/picwish_8813969381_image1.jpg"]
+    images: ["assets/images/picwish_8813969381_image1.webp"]
   },
   {
     id: "teal-river-console-top",
@@ -300,7 +300,7 @@ export const PRODUCTS = [
     description:
       "A long-form live edge bench with a vibrant teal channel, built to stand out in entryways and studio lofts.",
     care: "Keep dry and avoid prolonged standing water on the surface.",
-    images: ["assets/images/picwish_8813969501_image2.jpg"]
+    images: ["assets/images/picwish_8813969501_image2.webp"]
   }
 ];
 

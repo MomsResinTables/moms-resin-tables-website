@@ -1,12 +1,7 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <!-- Google Analytics 4 -->
-  <script async src="https://www.googletagmanager.com/gtag/js?id=G-H3JYBTM98L"></script>
-  <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-H3JYBTM98L',{cookie_flags:'max-age=7200;secure;samesite=none'});</script>
-  <!-- Microsoft Clarity -->
-  <script>(function(c,l,a,r,i,t,y){c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};t=l.createElement(r);t.async=1;t.src='https://www.clarity.ms/tag/'+i;y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);})(window,document,'clarity','script','wleys7cfci');</script>
   <meta name="p:domain_verify" content="e90dc6b5374b2e93c3e4da22f362015e" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="google-site-verification" content="pnz9-JE4vZ8Qie-jop-Df7Kdlmcw7tSCLddOxq156VM" />
@@ -22,37 +17,26 @@
   <meta property="og:type" content="website" />
   <meta property="og:title" content="Handcrafted Resin Tables, River Tables & Live Edge Builds | Mom's Resin Tables" />
   <meta property="og:description" content="Shop handcrafted resin tables, live edge tabletops, and custom river table builds made in Safety Harbor, Florida with nationwide shipping." />
-  <meta property="og:image" content="https://momsresintables.com/assets/images/picwish_8813969001_image1.jpg" />
+  <meta property="og:image" content="https://momsresintables.com/assets/images/picwish_8813969001_image1.webp" />
   <meta property="og:url" content="https://momsresintables.com/" />
   <meta property="og:site_name" content="Mom's Resin Tables" />
   <meta property="og:locale" content="en_US" />
   <meta name="twitter:card" content="summary_large_image" />
   <meta name="twitter:title" content="Handcrafted Resin Tables, River Tables & Live Edge Builds | Mom's Resin Tables" />
   <meta name="twitter:description" content="Shop handcrafted resin tables, live edge tabletops, and custom river table builds made in Safety Harbor, Florida with nationwide shipping." />
-  <meta name="twitter:image" content="https://momsresintables.com/assets/images/picwish_8813969001_image1.jpg" />
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=Sora:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <meta name="twitter:image" content="https://momsresintables.com/assets/images/picwish_8813969001_image1.webp" />
+  <link rel="preload" as="image" href="assets/images/momhero-optimized.webp" fetchpriority="high" />
+  <link rel="preload" as="image" href="assets/images/logo-optimized.webp" imagesizes="60px" />
   <link rel="stylesheet" href="styles.css" />
   <script type="application/ld+json" data-home-schema></script>
 
-    <!-- Pinterest Tag -->
-    <script>
-    !function(e){if(!window.pintrk){window.pintrk = function () {
-    window.pintrk.queue.push(Array.prototype.slice.call(arguments))};var n=window.pintrk;n.queue=[],n.version="3.0";var t=document.createElement("script");t.async=!0,t.src=e;var r=document.getElementsByTagName("script")[0]; r.parentNode.insertBefore(t,r)}}("https://s.pinimg.com/ct/core.js");
-    pintrk('load', '2614087859943');
-    pintrk('page');
-    </script>
-    <noscript>
-    <img height="1" width="1" style="display:none;" alt="" src="https://ct.pinterest.com/v3/?event=init&tid=2614087859943&noscript=1" />
-    </noscript>
-    <!-- end Pinterest Tag --></head>
+</head>
 <body>
   <header class="site-header">
     <div class="announce" data-announcement></div>
     <div class="nav-wrap">
       <a class="brand brand-with-logo" href="index.html">
-        <img class="brand-logo" src="assets/images/MomLogoTrans.png" alt="Mom's Resin Tables logo" />
+        <img class="brand-logo" src="assets/images/logo-optimized.webp" alt="Mom's Resin Tables logo" width="200" height="200" decoding="async" fetchpriority="high" />
         <span class="brand-copy">
           <strong>Mom's Resin Tables</strong>
           <span>Rare Wood. Handmade Character.</span>
@@ -77,6 +61,9 @@
 
   <main>
     <section class="hero">
+      <div class="hero-media" aria-hidden="true">
+        <img src="assets/images/momhero-optimized.webp" alt="" width="1916" height="821" fetchpriority="high" decoding="async" />
+      </div>
       <div class="container hero-grid">
         <div class="hero-main">
           <div class="hero-copy">
@@ -229,6 +216,64 @@
     </div>
   </footer>
 
+  <script>
+    // Delay non-critical tracking scripts until the page is interactive.
+    (function () {
+      function loadScript(src) {
+        var s = document.createElement("script");
+        s.src = src;
+        s.async = true;
+        document.head.appendChild(s);
+      }
+
+      function initTrackers() {
+        if (window.__mrtTrackersLoaded) {
+          return;
+        }
+        window.__mrtTrackersLoaded = true;
+
+        window.dataLayer = window.dataLayer || [];
+        window.gtag = function () { window.dataLayer.push(arguments); };
+        loadScript("https://www.googletagmanager.com/gtag/js?id=G-H3JYBTM98L");
+        window.gtag("js", new Date());
+        window.gtag("config", "G-H3JYBTM98L", { cookie_flags: "max-age=7200;secure;samesite=none" });
+
+        (function (c, l, a, r, i, t, y) {
+          c[a] = c[a] || function () { (c[a].q = c[a].q || []).push(arguments); };
+          t = l.createElement(r);
+          t.async = 1;
+          t.src = "https://www.clarity.ms/tag/" + i;
+          y = l.getElementsByTagName(r)[0];
+          y.parentNode.insertBefore(t, y);
+        })(window, document, "clarity", "script", "wleys7cfci");
+
+        (function (e) {
+          if (!window.pintrk) {
+            window.pintrk = function () {
+              window.pintrk.queue.push(Array.prototype.slice.call(arguments));
+            };
+            var n = window.pintrk;
+            n.queue = [];
+            n.version = "3.0";
+            var t = document.createElement("script");
+            t.async = true;
+            t.src = e;
+            var r = document.getElementsByTagName("script")[0];
+            r.parentNode.insertBefore(t, r);
+          }
+        })("https://s.pinimg.com/ct/core.js");
+        window.pintrk("load", "2614087859943");
+        window.pintrk("page");
+      }
+
+      var schedule = function () { setTimeout(initTrackers, 2000); };
+      if ("requestIdleCallback" in window) {
+        window.requestIdleCallback(schedule, { timeout: 3500 });
+      } else {
+        window.addEventListener("load", schedule, { once: true });
+      }
+    })();
+  </script>
   <script type="module" src="scripts/main.js"></script>
 </body>
 </html>

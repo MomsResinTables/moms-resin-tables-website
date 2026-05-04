@@ -55,8 +55,8 @@ export function setAnnouncement(text) {
 }
 
 const SITE_ORIGIN = `https://${STORE.domain}`;
-const DEFAULT_SOCIAL_IMAGE = `${SITE_ORIGIN}/assets/images/picwish_8813969001_image1.jpg`;
-const BRAND_LOGO_URL = `${SITE_ORIGIN}/assets/images/MomLogoTrans.png`;
+const DEFAULT_SOCIAL_IMAGE = `${SITE_ORIGIN}/assets/images/picwish_8813969001_image1.webp`;
+const BRAND_LOGO_URL = `${SITE_ORIGIN}/assets/images/logo-optimized.webp`;
 const PAGE_SEO = {
   "index.html": {
     title: "Handcrafted Resin Tables, River Tables & Live Edge Builds | Mom's Resin Tables",
@@ -1958,6 +1958,9 @@ function renderUtilityPanel() {
 
 function showUtilityPanel(mode) {
   const panel = ensureUtilityPanel();
+  if ((mode || "account") !== "cart") {
+    initializeAccountAuth();
+  }
   closeHeaderAccountMenus();
   panel.hidden = false;
   panel.setAttribute("aria-hidden", "false");
@@ -2199,7 +2202,7 @@ function ensureFooterEnhancements() {
   });
 }
 
-export function initHeaderUtilities() {
+export function initHeaderUtilities(options = {}) {
   handleCheckoutSuccessMessage();
   injectGlobalSeo();
 
@@ -2208,7 +2211,10 @@ export function initHeaderUtilities() {
     return;
   }
 
-  initializeAccountAuth();
+  const deferAuth = Boolean(options.deferAuth);
+  if (!deferAuth) {
+    initializeAccountAuth();
+  }
   ensureUtilityPanel();
   ensureMobileMenuEnhancements();
   ensureFooterEnhancements();
