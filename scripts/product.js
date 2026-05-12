@@ -220,6 +220,21 @@ function renderNotFound() {
     return;
   }
 
+  const robots = document.querySelector('meta[name="robots"]');
+  if (robots) {
+    robots.setAttribute("content", "noindex, follow");
+  } else {
+    const node = document.createElement("meta");
+    node.setAttribute("name", "robots");
+    node.setAttribute("content", "noindex, follow");
+    document.head.appendChild(node);
+  }
+
+  const canonical = document.querySelector('link[rel="canonical"]');
+  if (canonical) {
+    canonical.setAttribute("href", `${SITE_ORIGIN}/shop.html`);
+  }
+
   wrapper.innerHTML = `
     <section class="not-found">
       <h1>Product Not Found</h1>
