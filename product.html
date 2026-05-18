@@ -17,7 +17,15 @@
   <meta name="theme-color" content="#0f6b6f" />
   <title>Resin Tabletop Product | Mom's Resin Tables</title>
   <meta name="description" content="View handcrafted resin tabletop details, pricing, shipping, and care information for one-of-one pieces from Mom's Resin Tables." />
-  <link rel="canonical" href="https://momsresintables.com/product.html" />
+  <link rel="canonical" id="page-canonical" href="https://momsresintables.com/product.html" />
+  <script>
+    (function() {
+      var id = new URLSearchParams(location.search).get('id');
+      if (id) {
+        document.getElementById('page-canonical').setAttribute('href', 'https://momsresintables.com/product.html?id=' + encodeURIComponent(id));
+      }
+    })();
+  </script>
   <meta property="og:type" content="product" />
   <meta property="og:title" content="Resin Tabletop Product | Mom's Resin Tables" />
   <meta property="og:description" content="View handcrafted resin tabletop details, pricing, shipping, and care information for one-of-one pieces from Mom's Resin Tables." />
@@ -78,7 +86,7 @@
     <section class="page-hero">
       <div class="container">
         <h1 data-product-name>Product Name</h1>
-        <p><span data-product-category></span> • <span data-product-style></span></p>
+        <p><span data-product-category></span> ï¿½ <span data-product-style></span></p>
       </div>
     </section>
 
