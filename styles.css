@@ -1172,6 +1172,24 @@ img {
   border-color: #ccb39a;
 }
 
+.breadcrumb-nav {
+  padding: 0.75rem 0 0;
+}
+
+.breadcrumb-nav a {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--accent);
+  text-decoration: none;
+  opacity: 0.85;
+  transition: opacity 0.15s;
+}
+
+.breadcrumb-nav a:hover {
+  opacity: 1;
+  text-decoration: underline;
+}
+
 .page-hero {
   padding: clamp(2rem, 5vw, 4rem) 0 1rem;
 }
