@@ -75,26 +75,59 @@ function injectSchema(product) {
     return;
   }
 
+  const shippingRate = getShippingRate(product);
+  const validUntil = new Date();
+  validUntil.setFullYear(validUntil.getFullYear() + 1);
+
   const schema = {
     "@context": "https://schema.org",
     "@type": "Product",
     name: product.name,
     sku: product.sku,
-    image: product.images,
+    image: product.images.map(toAbsoluteUrl),
     description: product.description,
     brand: {
       "@type": "Brand",
       name: STORE.name
     },
+    itemCondition: "https://schema.org/NewCondition",
     offers: {
       "@type": "Offer",
       url: `${SITE_ORIGIN}/product.html?id=${encodeURIComponent(product.id)}`,
       priceCurrency: STORE.currency,
       price: product.price,
+      priceValidUntil: validUntil.toISOString().split("T")[0],
       availability: "https://schema.org/InStock",
       seller: {
         "@type": "Organization",
         name: STORE.name
+      },
+      shippingDetails: {
+        "@type": "OfferShippingDetails",
+        shippingRate: {
+          "@type": "MonetaryAmount",
+          value: shippingRate,
+          currency: "USD"
+        },
+        shippingDestination: {
+          "@type": "DefinedRegion",
+          addressCountry: "US"
+        },
+        deliveryTime: {
+          "@type": "ShippingDeliveryTime",
+          handlingTime: {
+            "@type": "QuantitativeValue",
+            minValue: 3,
+            maxValue: 5,
+            unitCode: "DAY"
+          },
+          transitTime: {
+            "@type": "QuantitativeValue",
+            minValue: 3,
+            maxValue: 7,
+            unitCode: "DAY"
+          }
+        }
       }
     }
   };
