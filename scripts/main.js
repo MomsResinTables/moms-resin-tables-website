@@ -32,7 +32,7 @@ function productCardTemplate(product) {
 
   card.innerHTML = `
     <a class="product-thumb" href="product.html?id=${product.id}" aria-label="View ${product.name}">
-      <img src="${product.images[0]}" alt="${product.name}" loading="lazy" />
+      <img src="${product.images[0]}" alt="${product.name} — handmade epoxy resin tabletop" loading="lazy" />
       <span class="badge">${isProductAvailable(product) ? product.styleTag : "Sold"}</span>
     </a>
     <div class="product-copy">

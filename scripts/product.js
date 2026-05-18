@@ -144,7 +144,7 @@ function renderGallery(product) {
   }
 
   main.src = product.images[0];
-  main.alt = product.name;
+  main.alt = `${product.name} — handmade epoxy resin tabletop by Mom's Resin Tables`;
 
   product.images.forEach((image, index) => {
     const button = document.createElement("button");
