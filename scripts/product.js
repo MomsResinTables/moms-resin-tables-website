@@ -295,6 +295,22 @@ function init() {
   renderGallery(product);
   renderDetails(product);
   injectSchema(product);
+  injectBreadcrumb(product);
+}
+
+function injectBreadcrumb(product) {
+  const node = document.querySelector("[data-breadcrumb-schema]");
+  if (!node) { return; }
+  const schema = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      {"@type": "ListItem", "position": 1, "name": "Home", "item": `${SITE_ORIGIN}/`},
+      {"@type": "ListItem", "position": 2, "name": "Shop", "item": `${SITE_ORIGIN}/shop.html`},
+      {"@type": "ListItem", "position": 3, "name": product.name, "item": `${SITE_ORIGIN}/product.html?id=${encodeURIComponent(product.id)}`}
+    ]
+  };
+  node.textContent = JSON.stringify(schema);
 }
 
 init();
