@@ -298,7 +298,7 @@ export const PRODUCTS = [
     availability: "One of one",
     paymentLink: "https://buy.stripe.com/fZu5kD1kn9N5gev3Q6gQE0b",
     description:
-      "The Teal River Console Top is a long-form live edge hardwood slab epoxy resin table top at approximately 44 × 15 inches — built specifically as a console table, hallway table top, or long accent bench surface. A vibrant teal epoxy river channel runs through the natural live edge slab, creating bold contrast against the dark wood grain. The mirror resin coat and hand-smoothed edges give it a finished, gallery-quality appearance. Perfect for entryways, studio lofts, behind sofas, or as a sideboard top. This is a statement live edge river table design — one of one — made by hand and shipped from Safety Harbor, Florida.",,
+      "The Teal River Console Top is a long-form live edge hardwood slab epoxy resin table top at approximately 44 × 15 inches — built specifically as a console table, hallway table top, or long accent bench surface. A vibrant teal epoxy river channel runs through the natural live edge slab, creating bold contrast against the dark wood grain. The mirror resin coat and hand-smoothed edges give it a finished, gallery-quality appearance. Perfect for entryways, studio lofts, behind sofas, or as a sideboard top. This is a statement live edge river table design — one of one — made by hand and shipped from Safety Harbor, Florida.",
     care: "Keep dry and avoid prolonged standing water on the surface.",
     images: ["assets/images/picwish_8813969501_image2.webp"]
   }
