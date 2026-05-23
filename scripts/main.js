@@ -38,7 +38,7 @@ function productCardTemplate(product) {
     <div class="product-copy">
       <p class="product-category">${product.category}</p>
       <h3><a href="product.html?id=${product.id}">${product.name}</a></h3>
-      <p class="product-description">${product.description}</p>
+      <p class="product-description">${product.cardDescription || product.description}</p>
       <p class="scope-note">${product.scopeNote}</p>
       <div class="price-row">
         <strong>${current}</strong>

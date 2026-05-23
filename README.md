@@ -6,6 +6,12 @@ Every piece is a one-of-one. No mass production. No two tables are alike.
 
 🌐 **Live site:** [momsresintables.com](https://momsresintables.com)
 
+## Source of Truth
+
+- This repository root is the production source of truth for the site.
+- On the local machine, `E:\MomEcommerce` is only a parent container. The actual Git repo and deploy root is `E:\MomEcommerce\Moms Table Tops\Ecommerce`.
+- The live domain currently serves from GitHub Pages for this repository. Vercel is not the active production host for `momsresintables.com`.
+
 ---
 
 ## What We Build
@@ -38,9 +44,9 @@ Customers can price and spec their own build at [momsresintables.com/custom.html
 | Layer | Tech |
 |---|---|
 | Frontend | Vanilla HTML, CSS, JS (ES modules) |
-| Payments | Snipcart |
+| Payments | Stripe payment links + custom cart / checkout UI |
 | Auth | Firebase |
-| Hosting | GitHub Pages / Vercel |
+| Hosting | GitHub Pages |
 | Forms | Formspree |
 
 ---
@@ -48,34 +54,30 @@ Customers can price and spec their own build at [momsresintables.com/custom.html
 ## Project Structure
 
 ```
-Ecommerce/
   index.html              # Homepage
   shop.html               # Product catalog
   product.html            # Product detail
   custom.html             # Custom Build configurator
   contact.html            # Contact
   about.html              # About
-  checkout.html           # Checkout
   styles.css              # Global stylesheet
   scripts/
-    common.js             # Shared header/footer/cart logic
+    common.js             # Shared header, cart, checkout overlay, and account/auth logic
     main.js               # Homepage
     customizer.js         # Custom builder logic
     products.js           # Product rendering
-    checkout.js           # Checkout flow
   assets/
     images/               # Product + hero images
     woods/                # Wood species reference photos
     bases/                # Base style reference photos
     icons/                # Favicons and logo variants
-  policy_pages/           # Privacy, Terms, Refund, Lead Times, etc.
 ```
 
 ---
 
 ## Contact
 
-- 📧 hello@momsresintables.com
+- 📧 support@momsresintables.com
 - 📍 Safety Harbor, Florida
 - 🇺🇸 Nationwide shipping
 
