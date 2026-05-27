@@ -143,7 +143,7 @@ function injectHomepageSchema() {
     return;
   }
 
-  const list = PRODUCTS.map((product, index) => ({
+  const list = getAvailableProducts().map((product, index) => ({
     "@type": "ListItem",
     position: index + 1,
     item: {
@@ -158,7 +158,9 @@ function injectHomepageSchema() {
         "@type": "Offer",
         priceCurrency: STORE.currency,
         price: product.price,
-        availability: "https://schema.org/InStock"
+        availability: isProductAvailable(product)
+          ? "https://schema.org/InStock"
+          : "https://schema.org/OutOfStock"
       }
     }
   }));
