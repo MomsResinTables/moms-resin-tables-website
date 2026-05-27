@@ -1,4 +1,4 @@
-import { STORE, getProductById, getShippingRate } from "./products.js";
+import { STORE, getProductById, getShippingRate, isProductAvailable } from "./products.js";
 
 export function setYear() {
   const yearNodes = document.querySelectorAll("[data-year]");
@@ -334,8 +334,17 @@ function injectGlobalSeo() {
     ? `${product.name}. ${product.description} ${product.scopeNote} ${product.dimensions}. Ships nationwide from ${STORE.shipFrom}.`
     : config.description;
   const image = product ? toAbsoluteUrl(product.images?.[0]) : DEFAULT_SOCIAL_IMAGE;
+  const defaultRobots = "index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1";
+  const existingRobots = document.head.querySelector('meta[name="robots"]');
+  const productAvailabilityMeta = product && !isProductAvailable(product) ? "out of stock" : "in stock";
+  const productAvailabilitySchema = product && !isProductAvailable(product)
+    ? "https://schema.org/OutOfStock"
+    : "https://schema.org/InStock";
 
   document.title = title;
+  if (!existingRobots || !/noindex/i.test(existingRobots.getAttribute("content") || "")) {
+    upsertHeadTag("meta", 'meta[name="robots"]', { name: "robots", content: defaultRobots });
+  }
   upsertHeadTag("meta", 'meta[name="description"]', { name: "description", content: description });
   upsertHeadTag("link", 'link[rel="canonical"]', { rel: "canonical", href: canonicalUrl });
   upsertHeadTag("meta", 'meta[property="og:type"]', { property: "og:type", content: product ? "product" : config.ogType });
@@ -353,7 +362,7 @@ function injectGlobalSeo() {
   if (product) {
     upsertHeadTag("meta", 'meta[property="product:price:amount"]', { property: "product:price:amount", content: String(product.price) });
     upsertHeadTag("meta", 'meta[property="product:price:currency"]', { property: "product:price:currency", content: "USD" });
-    upsertHeadTag("meta", 'meta[property="product:availability"]', { property: "product:availability", content: "in stock" });
+    upsertHeadTag("meta", 'meta[property="product:availability"]', { property: "product:availability", content: productAvailabilityMeta });
     upsertHeadTag("meta", 'meta[property="product:condition"]', { property: "product:condition", content: "new" });
     upsertHeadTag("meta", 'meta[property="product:retailer_item_id"]', { property: "product:retailer_item_id", content: product.sku });
     upsertHeadTag("meta", 'meta[property="product:brand"]', { property: "product:brand", content: STORE.name });
@@ -442,7 +451,7 @@ function injectGlobalSeo() {
         priceCurrency: "USD",
         price: String(product.price),
         priceValidUntil: "2027-12-31",
-        availability: "https://schema.org/InStock",
+        availability: productAvailabilitySchema,
         itemCondition: "https://schema.org/NewCondition",
         seller: { "@id": `${SITE_ORIGIN}/#organization` },
         shippingDetails: {

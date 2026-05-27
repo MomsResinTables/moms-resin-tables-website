@@ -294,8 +294,6 @@ function init() {
   setMeta(product);
   renderGallery(product);
   renderDetails(product);
-  injectSchema(product);
-  injectBreadcrumb(product);
 }
 
 function injectBreadcrumb(product) {
