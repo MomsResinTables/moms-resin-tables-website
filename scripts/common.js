@@ -1145,7 +1145,7 @@ export function startProductCheckout(product, options = {}) {
     return false;
   }
 
-  const quantity = Math.max(1, Number(options.quantity) || 1);
+  const quantity = 1;
   const shouldAddToCart = options.addToCart === true;
 
   if (shouldAddToCart) {
@@ -1628,7 +1628,7 @@ function ensureUtilityPanel() {
       }
 
       // Record order before Stripe opens in new tab
-      const qty = Math.max(1, Number(cartItem.quantity) || 1);
+      const qty = 1;
       const subtotal = (Number(product.price) || 0) * qty;
       const shippingTotal = (Number(getShippingRate(product)) || 0) * qty;
       const orderId = createOrderId(product.id);
@@ -1889,7 +1889,9 @@ function renderUtilityPanel() {
 
   const firstCartItem = cartItems[0] || null;
   const targetProduct = firstCartItem && firstCartItem.id ? getProductById(firstCartItem.id) : null;
-  const checkoutQty = Math.max(1, Number(firstCartItem?.quantity) || 1);
+  const checkoutQty = targetProduct && isStripeCheckoutLink(targetProduct.paymentLink)
+    ? 1
+    : Math.max(1, Number(firstCartItem?.quantity) || 1);
   const checkoutSubtotal = targetProduct ? ((Number(targetProduct.price) || 0) * checkoutQty) : 0;
   const checkoutShipping = targetProduct ? ((Number(getShippingRate(targetProduct)) || 0) * checkoutQty) : 0;
   const checkoutTotal = checkoutSubtotal + checkoutShipping;

@@ -65,20 +65,31 @@ function productCardTemplate(product) {
   const qtyInc = card.querySelector(".qty-inc");
 
   if (qtyDec && qtyInc && qtyInput) {
-    qtyDec.addEventListener("click", () => {
-      const v = parseInt(qtyInput.value, 10) || 1;
-      if (v > 1) qtyInput.value = v - 1;
-    });
-    qtyInc.addEventListener("click", () => {
-      const v = parseInt(qtyInput.value, 10) || 1;
-      if (v < 10) qtyInput.value = v + 1;
-    });
+    if (hasStripeCheckout) {
+      qtyInput.value = "1";
+      qtyInput.max = "1";
+      qtyInput.readOnly = true;
+      qtyInput.setAttribute("aria-readonly", "true");
+      qtyDec.disabled = true;
+      qtyInc.disabled = true;
+    } else {
+      qtyDec.addEventListener("click", () => {
+        const v = parseInt(qtyInput.value, 10) || 1;
+        if (v > 1) qtyInput.value = v - 1;
+      });
+      qtyInc.addEventListener("click", () => {
+        const v = parseInt(qtyInput.value, 10) || 1;
+        if (v < 10) qtyInput.value = v + 1;
+      });
+    }
   }
 
   if (buyNow) {
     buyNow.addEventListener("click", (event) => {
       event.preventDefault();
-      const qty = Math.min(10, Math.max(1, parseInt(qtyInput ? qtyInput.value : "1", 10) || 1));
+      const qty = hasStripeCheckout
+        ? 1
+        : Math.min(10, Math.max(1, parseInt(qtyInput ? qtyInput.value : "1", 10) || 1));
 
       if (hasStripeCheckout) {
         startProductCheckout(product, {

@@ -55,7 +55,7 @@ export const PRODUCTS = [
     finish: "Hand-sanded, high-build polyurethane top coat",
     scopeNote: "Top only. Any base shown in photos is for presentation and is not included.",
     availability: "One of one",
-    paymentLink: "https://buy.stripe.com/8x2cN5d352kD2nF86mgQE00",
+    paymentLink: "https://buy.stripe.com/9B66oH04049haWa9Qs18c0b",
     cardDescription:
       "Compact one-of-one accent top with layered reclaimed hardwood and a teal shoreline pour.",
     description:
@@ -82,7 +82,7 @@ export const PRODUCTS = [
     finish: "Flood-coat resin seal with UV-resistant polyurethane",
     scopeNote: "Top only. Any base shown in photos is for presentation and is not included.",
     availability: "One of one",
-    paymentLink: "https://buy.stripe.com/14A9AT3sv5wPfar4UagQE01",
+    paymentLink: "https://buy.stripe.com/7sY7sLbMIdJR7JY4w818c0c",
     cardDescription:
       "Large geometric hardwood mosaic top with deep gloss resin and strong console-scale presence.",
     description:
@@ -106,7 +106,7 @@ export const PRODUCTS = [
     finish: "Glass-like resin flood coat",
     scopeNote: "Top only. Any base shown in photos is for presentation and is not included.",
     availability: "One of one",
-    paymentLink: "https://buy.stripe.com/3cIbJ1bZ10cvgevfyOgQE02",
+    paymentLink: "https://buy.stripe.com/8x228r9EAaxF6FU4w818c02",
     cardDescription:
       "Hand-cut chevron hardwood top with crystal-clear resin and a crisp modern accent-table profile.",
     description:
@@ -130,7 +130,7 @@ export const PRODUCTS = [
     finish: "High-gloss resin and polyurethane blend",
     scopeNote: "Top only. Any base shown in photos is for presentation and is not included.",
     availability: "One of one",
-    paymentLink: "https://buy.stripe.com/28E5kDe794sL9Q7dqGgQE03",
+    paymentLink: "https://buy.stripe.com/aFa3cveYU7ltggufaM18c03",
     cardDescription:
       "Compact live edge slab top with a teal resin channel and classic river-table character.",
     description:
@@ -154,7 +154,7 @@ export const PRODUCTS = [
     finish: "Resin flood coat with hand-buffed shine",
     scopeNote: "Top only. Any base shown in photos is for presentation and is not included.",
     availability: "One of one",
-    paymentLink: "https://buy.stripe.com/eVq7sL9QTaR96DV3Q6gQE04",
+    paymentLink: "https://buy.stripe.com/aFa4gz7ws6hpc0e2o018c04",
     cardDescription:
       "Low-profile striped hardwood top with clear resin and a restrained, gallery-clean finish.",
     description:
@@ -178,7 +178,7 @@ export const PRODUCTS = [
     finish: "Resin-protected top with durable satin edges",
     scopeNote: "Top only. Any base shown in photos is for presentation and is not included.",
     availability: "One of one",
-    paymentLink: "https://buy.stripe.com/00w5kDbZ18J15zR86mgQE05",
+    paymentLink: "https://buy.stripe.com/6oUcN5aIE0X5aWa1jW18c05",
     cardDescription:
       "Elongated one-of-one hardwood mosaic top built for console, bench, or hallway statement use.",
     description:
@@ -202,7 +202,7 @@ export const PRODUCTS = [
     finish: "Deep high-gloss resin top",
     scopeNote: "Top only. Any base shown in photos is for presentation and is not included.",
     availability: "One of one",
-    paymentLink: "https://buy.stripe.com/fZu8wP2or4sLd2j4UagQE06",
+    paymentLink: "https://buy.stripe.com/bJeaEX5okaxF6FU0fS18c06",
     cardDescription:
       "Premium multi-species chevron top with pigmented resin details and a mirror-gloss finish.",
     description:
@@ -229,7 +229,7 @@ export const PRODUCTS = [
     finish: "Gloss resin with sealed edge detailing",
     scopeNote: "Top only. Any base shown in photos is for presentation and is not included.",
     availability: "One of one",
-    paymentLink: "https://buy.stripe.com/7sY4gz2or7EX8M32M2gQE07",
+    paymentLink: "https://buy.stripe.com/8x23cv9EA5dl8O27Ik18c07",
     cardDescription:
       "Coffee-table-scale hardwood top with embedded resin lines and a polished statement finish.",
     description:
@@ -256,7 +256,7 @@ export const PRODUCTS = [
     finish: "Resin + polyurethane protective top coat",
     scopeNote: "Top only. Any base shown in photos is for presentation and is not included.",
     availability: "One of one",
-    paymentLink: "https://buy.stripe.com/28E8wPgfh0cvbYf5YegQE08",
+    paymentLink: "https://buy.stripe.com/00w28raIE6hp8O28Mo18c08",
     cardDescription:
       "Longer live edge slab top with translucent aqua resin and strong coastal-modern presence.",
     description:
@@ -280,7 +280,7 @@ export const PRODUCTS = [
     finish: "High-build clear coat with resin reinforcement",
     scopeNote: "Top only. Any base shown in photos is for presentation and is not included.",
     availability: "One of one",
-    paymentLink: "https://buy.stripe.com/dRmbJ1aUX2kDgev72igQE0a",
+    paymentLink: "https://buy.stripe.com/4gMaEXdUQaxFd4id2E18c09",
     cardDescription:
       "Warm cedar-led accent top with sculpted profile and a clear, furniture-grade finish.",
     description:
@@ -304,7 +304,7 @@ export const PRODUCTS = [
     finish: "Mirror resin coat, hand-smoothed edges",
     scopeNote: "Top only. Any base shown in photos is for presentation and is not included.",
     availability: "One of one",
-    paymentLink: "https://buy.stripe.com/fZu5kD1kn9N5gev3Q6gQE0b",
+    paymentLink: "https://buy.stripe.com/9B6fZhdUQbBJ9S6faM18c0a",
     cardDescription:
       "Long-form live edge river top with gallery-scale color contrast and premium console proportions.",
     description:
