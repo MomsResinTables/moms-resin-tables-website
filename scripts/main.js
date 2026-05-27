@@ -154,13 +154,50 @@ function injectHomepageSchema() {
       image: product.images.map((image) => toAbsoluteUrl(image)),
       category: product.category,
       description: product.description,
+      brand: {
+        "@type": "Brand",
+        name: STORE.name
+      },
       offers: {
         "@type": "Offer",
+        url: `${SITE_ORIGIN}/product.html?id=${encodeURIComponent(product.id)}`,
         priceCurrency: STORE.currency,
         price: product.price,
         availability: isProductAvailable(product)
           ? "https://schema.org/InStock"
-          : "https://schema.org/OutOfStock"
+          : "https://schema.org/OutOfStock",
+        seller: {
+          "@type": "Organization",
+          name: STORE.name,
+          url: `${SITE_ORIGIN}/`
+        },
+        shippingDetails: {
+          "@type": "OfferShippingDetails",
+          shippingRate: {
+            "@type": "MonetaryAmount",
+            value: getShippingRate(product),
+            currency: STORE.currency
+          },
+          shippingDestination: {
+            "@type": "DefinedRegion",
+            addressCountry: "US"
+          },
+          deliveryTime: {
+            "@type": "ShippingDeliveryTime",
+            handlingTime: {
+              "@type": "QuantitativeValue",
+              minValue: 1,
+              maxValue: 2,
+              unitCode: "DAY"
+            },
+            transitTime: {
+              "@type": "QuantitativeValue",
+              minValue: 3,
+              maxValue: 7,
+              unitCode: "DAY"
+            }
+          }
+        }
       }
     }
   }));
