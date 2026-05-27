@@ -1,10 +1,20 @@
 export const STORE = {
   name: "Mom's Resin Tables",
+  tagline: "Rare Wood. Handmade Character.",
+  description: "Handcrafted resin tables, live edge tabletops, and custom river table builds made in Safety Harbor, Florida with nationwide shipping.",
   domain: "momsresintables.com",
   currency: "USD",
   supportEmail: "support@momsresintables.com",
   supportPhone: "(727) 279-5289",
+  supportPhoneUri: "+17272795289",
   shipFrom: "Safety Harbor, Florida",
+  address: {
+    addressLocality: "Safety Harbor",
+    addressRegion: "FL",
+    postalCode: "34695",
+    addressCountry: "US"
+  },
+  searchUrlTemplate: "https://momsresintables.com/shop.html?q={search_term_string}",
   shippingBands: {
     decor: { label: "Decor", rate: 18 },
     side: { label: "Side Table", rate: 34 },

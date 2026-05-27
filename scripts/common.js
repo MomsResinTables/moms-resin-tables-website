@@ -375,6 +375,20 @@ function injectGlobalSeo() {
       name: STORE.name,
       url: `${SITE_ORIGIN}/`,
       email: STORE.supportEmail,
+      telephone: STORE.supportPhoneUri,
+      description: STORE.description,
+      slogan: STORE.tagline,
+      contactPoint: {
+        "@type": "ContactPoint",
+        contactType: "customer support",
+        email: STORE.supportEmail,
+        telephone: STORE.supportPhoneUri,
+        areaServed: {
+          "@type": "Country",
+          name: "United States"
+        },
+        availableLanguage: "en-US"
+      },
       logo: {
         "@type": "ImageObject",
         url: BRAND_LOGO_URL
@@ -386,16 +400,18 @@ function injectGlobalSeo() {
       name: STORE.name,
       url: `${SITE_ORIGIN}/`,
       image: image,
+      description: STORE.description,
+      slogan: STORE.tagline,
       email: STORE.supportEmail,
-      telephone: "+17272795289",
+      telephone: STORE.supportPhoneUri,
       address: {
         "@type": "PostalAddress",
-        addressLocality: "Safety Harbor",
-        addressRegion: "FL",
-        postalCode: "34695",
-        addressCountry: "US"
+        ...STORE.address
       },
-      areaServed: "US",
+      areaServed: {
+        "@type": "Country",
+        name: "United States"
+      },
       priceRange: "$$",
       hasOfferCatalog: {
         "@id": `${SITE_ORIGIN}/#offer-catalog`
@@ -408,6 +424,14 @@ function injectGlobalSeo() {
       name: STORE.name,
       publisher: {
         "@id": `${SITE_ORIGIN}/#organization`
+      },
+      potentialAction: {
+        "@type": "SearchAction",
+        target: {
+          "@type": "EntryPoint",
+          urlTemplate: STORE.searchUrlTemplate
+        },
+        "query-input": "required name=search_term_string"
       }
     },
     {
